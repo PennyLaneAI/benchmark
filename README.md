@@ -1,4 +1,7 @@
 # benchmark
+
+(Work in progress)
+
 Benchmarks the PennyLane library using airspeed velocity. At the moment the benchmarks are just dummies. Add new ones by adding methods to the files in the `benchmarks` folder.
 
 To run the benchmarks, install avs via
