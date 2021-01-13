@@ -1,4 +1,4 @@
-from ..benchmark_functions.benchmark_example import BenchmarksExample
+from ..benchmark_functions.benchmark_example_file import BenchmarksExample_Class
 
 class Suite_example:
 
@@ -27,7 +27,7 @@ class Suite_example:
         This function is prefaced with `time` to indicate we are tracking
         time
         """
-        result = BenchmarksExample.benchmark_example(duration)
+        result = BenchmarksExample_Class.benchmark_example_function(duration)
 
 class Suite_example_mem:
     
@@ -44,4 +44,4 @@ class Suite_example_mem:
         """
         this function is prefaced `mem` to indicate we are tracking memory
         """
-        results = BenchmarksExample.benchmark_example_mem(val, n)
+        results = BenchmarksExample_Class.benchmark_example_mem_function(val, n)
