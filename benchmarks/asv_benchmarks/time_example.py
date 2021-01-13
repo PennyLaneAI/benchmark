@@ -24,10 +24,19 @@ class Suite_example:
 
     def time_example(self, duration):
         """
-        This function is prefaced with `time` to indicate we are tracking
-        time
+        The preface `time` indicates we are tracking time
         """
         result = BenchmarksExample_Class.benchmark_example_function(duration)
+
+    def time_example_here(self, class_param):
+        """
+        We can have multiple benchmarks in the same suite.
+        They will use the same parameters and same setup and teardown functions.
+
+        This is a bad function to place here, because it doesn't depend on the parameters,
+        yet still gets run multiple times.
+        """
+        print("hello world")
 
 class Suite_example_mem:
     
@@ -42,6 +51,13 @@ class Suite_example_mem:
 
     def mem_example(self, val, n):
         """
-        this function is prefaced `mem` to indicate we are tracking memory
+        The preface `mem` calculates the size of the returned value
+        """
+        return BenchmarksExample_Class.benchmark_example_mem_function(val, n)
+
+    def peakmem_example(self, val, n):
+        """
+        This preface `mempeak` indicates we are tracking peak memory.
+        It calculates the maximum resident size in bytes of the process
         """
         results = BenchmarksExample_Class.benchmark_example_mem_function(val, n)
