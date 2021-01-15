@@ -1,40 +1,26 @@
-# benchmark
+# PennyLane Benchmarking
 
-(Work in progress)
+(Work in Progress)
 
-Benchmarks the PennyLane library using airspeed velocity. At the moment the benchmarks are just dummies. Add new ones by adding methods to the files in the `benchmarks` folder.
+This repository holds the benchmarking tools for [PennyLane](https://github.com/PennyLaneAI/pennylane).
 
-To run the benchmarks, install avs via
+Check out the current results at [https://pennylaneai.github.io/benchmark/](https://pennylaneai.github.io/benchmark/)
 
-```console
-pip install asv 
-```
+## Structure
 
-To benchmark a single commit:
+`asv.conf.json`: configures asv.
 
-```console
-asv run <commit>^..<commit>
-```
+`asv_command_list.rst`: relevant common commands.
 
-To benchmark all commits that connect two commits:
+`profiling_instructions.md`: an explanation of how to run profiling on a particular function.
 
-```console
-asv run <commit1>..<commit2>
-```
+`benchmarks/asv_benchmarks`: folder holding the benchmark cases
 
-To benchmark selected commits stored in the provided `commits.txt` file:
-
-```console
-asv run HASHFILE:commits.txt
-```
-
-Visualisation of commits is done by
-
-```console
-asv publish
-asv preview
-```
+`benchmarks/benchmark_functions`: folder holding the functions that cases execute.  Functions independently to asv
 
 
 
 More details can be found in the wonderful [asv docs](https://asv.readthedocs.io/en/stable/).
+
+Contributors:
+Christina Lee, Maria Schuld
