@@ -22,24 +22,24 @@ Check out the current results at [https://pennylaneai.github.io/benchmark/](http
 
 To run the benchmarks, install avs via
 
-pip install asv 
+`pip install asv `
 
 To benchmark a single commit:
 
-asv run <commit>^..<commit>
+`asv run <commit>^..<commit>`
   
 To benchmark all commits that connect two commits:
 
-asv run <commit1>..<commit2>
+`asv run <commit1>..<commit2>`
   
 To benchmark selected commits stored in the provided commits.txt file:
 
-asv run HASHFILE:commits.txt
+`asv run HASHFILE:commits.txt`
 
 Visualisation of commits is done by:
 
-asv publish
-asv preview
+`asv publish`
+`asv preview`
 
 More details can be found in the wonderful [asv docs](https://asv.readthedocs.io/en/stable/).
 
