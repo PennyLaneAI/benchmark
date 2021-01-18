@@ -64,7 +64,7 @@ def benchmark_gradient(hyperparams={}, num_repeats=1):
 			tape.gradient(result, [params])
 
 		elif interface == 'torch':
-			params = torch.tensor(params)
+			params = torch.tensor(params, requires_grad=True)
 			result = circuit(params)
 			result.backward()
 

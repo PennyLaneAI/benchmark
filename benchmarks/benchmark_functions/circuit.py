@@ -17,7 +17,6 @@ Benchmarks for simple circuit evaluations.
 import pennylane as qml
 import tensorflow as tf
 import torch
-from jax import numpy as jnp
 from pennylane import numpy as pnp
 from .default_settings import _set_defaults
 
@@ -46,13 +45,13 @@ def benchmark_circuit(hyperparams={}, num_repeats=1):
 
 	device, diff_method, interface, params, template, measurement = _set_defaults(hyperparams)
 
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
-	def circuit(params_):
-		template(params_)
-		measurement.queue()
-		return measurement
-
 	for _ in range(num_repeats):
+
+		@qml.qnode(device, interface=interface, diff_method=diff_method)
+		def circuit(params_):
+			template(params_)
+			measurement.queue()
+			return measurement
 
 		# turn parameters into tensor from interface
 		if interface == 'autograd':
@@ -61,7 +60,5 @@ def benchmark_circuit(hyperparams={}, num_repeats=1):
 			params = tf.Variable(params)
 		elif interface == 'torch':
 			params = torch.tensor(params)
-		elif interface == 'jax':
-			params = jnp.array(params)
 
 		circuit(params)

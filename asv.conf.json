@@ -49,7 +49,9 @@
     // followed by the pip installed packages).
     //
     "matrix": {
-        "pennylane": []
+        "pennylane": [],
+        "tensorflow": [],
+        "torch": [],
     },
 
     // -------------------------------------------------------------------

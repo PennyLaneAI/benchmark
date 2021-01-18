@@ -19,7 +19,6 @@ from numpy.random import random
 import pennylane as qml
 import tensorflow as tf
 import torch
-from jax import numpy as jnp
 from pennylane import numpy as pnp
 from .default_settings import _set_defaults
 
