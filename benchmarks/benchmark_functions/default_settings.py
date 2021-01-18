@@ -32,7 +32,7 @@ def _set_defaults(hyperparams):
 	interface = hyperparams.pop('interface', 'autograd')
 	params = hyperparams.pop('params', random(size=(n_layers, n_wires)))
 	measurement = hyperparams.pop('measurement', qml.expval(qml.PauliZ(0)))
-	diff_method = hyperparams.pop('diff_method', 'parameter-shift')
+	diff_method = hyperparams.pop('diff_method', 'best')
 	device = hyperparams.pop('device', 'default.qubit')
 	template = hyperparams.pop('template', None)
 
