@@ -26,7 +26,7 @@ from .default_settings import _set_defaults
 qml.enable_tape()
 
 
-def benchmark_optimization(hyperparams={}, n_steps=200, num_repeats=1):
+def benchmark_optimization(hyperparams={}, n_steps=20, num_repeats=1):
 	"""Trains a quantum circuit for n_steps steps with a gradient descent optimizer.
 
 	Args:
@@ -83,10 +83,13 @@ def benchmark_optimization(hyperparams={}, n_steps=200, num_repeats=1):
 			params = torch.tensor(params, requires_grad=True)
 			opt = torch.optim.SGD([params], lr=0.1)
 
-			for i in range(n_steps):
+			def closure():
 				opt.zero_grad()
 				loss = circuit(params)
 				loss.backward()
-				opt.step(loss)
+				return loss
+
+			for i in range(n_steps):
+				opt.step(closure)
 
 	# TODO: jax

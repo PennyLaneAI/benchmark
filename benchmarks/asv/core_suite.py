@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Define asv benchmarks for circuit evaluations
+Define asv benchmark suite that estimates the speed of core operations.
 """
 from ..benchmark_functions.circuit import benchmark_circuit
 from ..benchmark_functions.gradient import benchmark_gradient
+from ..benchmark_functions.optimization import benchmark_optimization
 
 
 class CircuitEvaluation:
@@ -54,3 +55,22 @@ class GradientComputation:
                        'n_layers': n_layers,
                        'interface': 'torch'}
         benchmark_gradient(hyperparams)
+
+
+class Optimization:
+    """Benchmark the optimization of a circuit."""
+
+    def time_optimization_autograd(self):
+        """Time gradient descent on the default circuit using autograd."""
+        hyperparams = {'interface': 'autograd'}
+        benchmark_optimization(hyperparams, n_steps=10)
+
+    def time_optimization_tf(self):
+        """Time gradient descent on the default circuit using tf."""
+        hyperparams = {'interface': 'tf'}
+        benchmark_optimization(hyperparams, n_steps=10)
+
+    def time_optimization_torch(self):
+        """Time gradient descent on the default circuit using torch."""
+        hyperparams = {'interface': 'torch'}
+        benchmark_optimization(hyperparams, n_steps=10)
