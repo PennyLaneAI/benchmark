@@ -30,15 +30,25 @@ def benchmark_gradient(hyperparams={}, num_repeats=1):
 	run on 4 qubits, followed by measuring the Pauli-Z observable of the first wire, and is run using
 	parameter shift differentiation, a 'default.qubit' device and the autograd interface.
 
-	Args:
+		Args:
 		hyperparams (dict): hyperparameters to configure this benchmark
+
 			* 'n_wires': Number of wires to use. Will be ignored if custom device and template are provided.
+
 			* 'n_layers': Number of layers in the default template. Will be ignored if custom params are provided.
+
 			* 'diff_method': name of differentiation method
+
 			* 'device': device on which the circuit is run, or valid device name
+
 			* 'interface': name of the interface to use
+
 			* 'template': Template to use. The template must take the trainable parameters as its only argument.
+
+			* 'params': Numpy array of trainable parameters that is fed into the template.
+
 			* 'measurement': measurement function like `qml.expval(qml.PauliZ(0)))`
+
 		num_repeats (int): How often the same circuit is evaluated in a for loop. Default is 1.
 	"""
 

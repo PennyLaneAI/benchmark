@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Benchmarks for a machine learning application.
+Benchmarks for a circuit training application.
 """
 from numpy.random import random
 
@@ -26,20 +26,8 @@ from .default_settings import _set_defaults
 qml.enable_tape()
 
 
-def _machine_learning_autograd(circuit, params):
-	return NotImplemented
-
-
-def _machine_learning_tf(circuit, params):
-	return NotImplemented
-
-
-def _machine_learning_torch(circuit, params):
-	return NotImplemented
-
-
-def benchmark_machine_learning(hyperparams={}, num_repeats=1):
-	"""Trains a hybrid quantum-classical machine learning pipeline.
+def benchmark_optimization(hyperparams={}, n_steps=200, num_repeats=1):
+	"""Trains a quantum circuit for n_steps steps with a gradient descent optimizer.
 
 	Args:
 	hyperparams (dict): hyperparameters to configure this benchmark
@@ -60,6 +48,7 @@ def benchmark_machine_learning(hyperparams={}, num_repeats=1):
 
 		* 'measurement': measurement function like `qml.expval(qml.PauliZ(0)))`
 
+	n_steps (int): number of optimization steps
 	num_repeats (int): How often the same circuit is evaluated in a for loop. Default is 1.
 	"""
 
@@ -74,12 +63,30 @@ def benchmark_machine_learning(hyperparams={}, num_repeats=1):
 	for _ in range(num_repeats):
 
 		if interface == 'autograd':
-			_machine_learning_autograd(circuit, params)
+			params = pnp.array(params, requires_grad=True)
+			opt = qml.GradientDescentOptimizer(stepsize=0.1)
+
+			for i in range(n_steps):
+				params = opt.step(circuit, params)
 
 		elif interface == 'tf':
-			_machine_learning_tf(circuit, params)
+			params = tf.Variable(params)
+			opt = tf.keras.optimizers.SGD(learning_rate=0.1)
+
+			for i in range(n_steps):
+				with tf.GradientTape() as tape:
+					loss = circuit(params)
+				gradients = tape.gradient(loss, [params])
+				opt.apply_gradients(zip(gradients, [params]))
 
 		elif interface == 'torch':
-			_machine_learning_torch(circuit, params)
+			params = torch.tensor(params, requires_grad=True)
+			opt = torch.optim.SGD([params], lr=0.1)
 
-		# TODO: jax
+			for i in range(n_steps):
+				opt.zero_grad()
+				loss = circuit(params)
+				loss.backward()
+				opt.step(loss)
+
+	# TODO: jax
