@@ -15,5 +15,15 @@
 Define asv benchmark suite that estimates the speed of applications.
 """
 
+from ..benchmark_functions.vqe import benchmark_vqe
 
+class VQEEvaluation:
+    """Benchmark VQE."""
 
+    params = ([1, 5, 10])
+    param_names = ['num_repeats']
+
+    def time_vqe(self, num_repeats):
+        """Time VQE."""
+        hyperparams = {'num_repeats': num_repeats}
+        benchmark_vqe(hyperparams)
