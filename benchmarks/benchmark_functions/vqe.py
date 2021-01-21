@@ -27,7 +27,7 @@ qml.enable_tape()
 
 def benchmark_vqe(hyperparams={}, num_repeats=1):
 	"""
-	Performs VQE simulation for the hydrogen molecule with STO-3G basis set using UCCSD template.
+	Performs VQE simulation for the hydrogen molecule with STO-3G basis set.
 
 	Args:
 		hyperparams (dict): hyperparameters to configure this benchmark
