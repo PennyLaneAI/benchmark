@@ -15,15 +15,57 @@
 Define asv benchmark suite that estimates the speed of applications.
 """
 
+import pennylane as qml
+from pennylane import numpy as np
 from ..benchmark_functions.vqe import benchmark_vqe
+from pennylane import Identity, PauliX, PauliY, PauliZ
+
+from pennylane import qchem
+from pennylane.templates.subroutines import UCCSD
+from functools import partial
+
 
 class VQEEvaluation:
     """Benchmark VQE."""
 
-    params = ([1, 5, 10])
-    param_names = ['num_repeats']
+    params = ([1, 2], [UCCSD])
+    param_names = ['n_steps', 'template']
 
-    def time_vqe(self, num_repeats):
-        """Time VQE."""
-        hyperparams = {'num_repeats': num_repeats}
-        benchmark_vqe(hyperparams)
+    def time_hydrogen(self, n_steps, template):
+        """Time VQE for the hydrogen molecule with sto-3g sis set."""
+
+        H_coeffs = np.array([-0.05963862, 0.17575739, 0.17575739, -0.23666489, -0.23666489,
+                             0.17001485, 0.04491735, -0.04491735, -0.04491735, 0.04491735,
+                             0.12222641, 0.16714376, 0.16714376, 0.12222641, 0.17570278])
+
+        H_ops = [Identity(wires=[0]),
+                 PauliZ(wires=[0]),
+                 PauliZ(wires=[1]),
+                 PauliZ(wires=[2]),
+                 PauliZ(wires=[3]),
+                 PauliZ(wires=[0]) @ PauliZ(wires=[1]),
+                 PauliY(wires=[0]) @ PauliX(wires=[1]) @ PauliX(wires=[2]) @ PauliY(wires=[3]),
+                 PauliY(wires=[0]) @ PauliY(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[3]),
+                 PauliX(wires=[0]) @ PauliX(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[3]),
+                 PauliX(wires=[0]) @ PauliY(wires=[1]) @ PauliY(wires=[2]) @ PauliX(wires=[3]),
+                 PauliZ(wires=[0]) @ PauliZ(wires=[2]),
+                 PauliZ(wires=[0]) @ PauliZ(wires=[3]),
+                 PauliZ(wires=[1]) @ PauliZ(wires=[2]),
+                 PauliZ(wires=[1]) @ PauliZ(wires=[3]),
+                 PauliZ(wires=[2]) @ PauliZ(wires=[3])]
+
+        H = qml.Hamiltonian(H_coeffs, H_ops)
+
+        electrons = 2
+        qubits = 4
+
+        singles, doubles = qchem.excitations(electrons, qubits, delta_sz=0)
+        s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
+        hf_state = qchem.hf_state(electrons, qubits)
+        ansatz = partial(template, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
+
+        params = np.random.normal(0, np.pi, len(singles) + len(doubles))
+
+        dev = qml.device('default.qubit', wires=qubits)
+
+        benchmark_vqe(H, ansatz, dev, params, n_steps)
