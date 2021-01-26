@@ -61,10 +61,10 @@ def _set_defaults(hyperparams):
 
 	Hamiltonian = hyperparams.pop('Hamiltonian', qml.Hamiltonian(H_coeffs, H_ops))
 	n_steps = hyperparams.pop('n_steps', 1)
-#	interface = hyperparams.pop('interface', 'autograd')
+	interface = hyperparams.pop('interface', 'autograd')
 	params = hyperparams.pop('params', np.random.normal(0, np.pi, len(singles) + len(doubles)))
 	optimize = hyperparams.pop('optimize', True)
-#	diff_method = hyperparams.pop('diff_method', 'best')
+	diff_method = hyperparams.pop('diff_method', 'best')
 	device = hyperparams.pop('device', 'default.qubit')
 	ansatz = hyperparams.pop('template', ansatz)
 
@@ -72,4 +72,4 @@ def _set_defaults(hyperparams):
 	if isinstance(device, str):
 		device = qml.device(device, wires=qubits)
 
-	return Hamiltonian, n_steps, params, optimize, device, ansatz
+	return Hamiltonian, n_steps, interface, params, optimize, diff_method, device, ansatz

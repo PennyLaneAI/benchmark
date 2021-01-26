@@ -44,9 +44,9 @@ def benchmark_vqe(hyperparams={}):
 			* 'measurement': measurement function like `qml.expval(qml.PauliZ(0)))`
 	"""
 
-	Hamiltonian, n_steps, params, optimize, device, ansatz = _set_defaults(hyperparams)
+	Hamiltonian, n_steps, interface, params, optimize, diff_method, device, ansatz = _set_defaults(hyperparams)
 
-	cost_fn = qml.ExpvalCost(ansatz, Hamiltonian, device, optimize=optimize)
+	cost_fn = qml.ExpvalCost(ansatz, Hamiltonian, device, interface, diff_method, optimize)
 	opt = qml.GradientDescentOptimizer(stepsize=0.4)
 
 	for n in range(n_steps):
