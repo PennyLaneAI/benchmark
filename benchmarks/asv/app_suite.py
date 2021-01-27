@@ -21,12 +21,11 @@ from ..benchmark_functions.vqe import benchmark_vqe
 class VQEEvaluation:
     """Benchmark VQE."""
 
-    params = ([1, 3], [False, True], ['best', 'parameter-shift'])
-    param_names = ['n_steps', 'optimize', 'diff_method']
+    params = ([1, 3], [False, True])
+    param_names = ['n_steps', 'optimize']
 
-    def time_hydrogen(self, n_steps, optimize, diff_method):
+    def time_hydrogen(self, n_steps, optimize):
         """Time VQE for the hydrogen molecule."""
         hyperparams = {'n_steps': n_steps,
-                       'optimize': optimize,
-                       'diff_method': diff_method}
+                       'optimize': optimize}
         benchmark_vqe(hyperparams)

@@ -15,7 +15,7 @@
 Benchmarks for VQE simulations.
 """
 import pennylane as qml
-from .default_vqe import _set_defaults
+from .default_settings import _vqe_defaults
 
 qml.enable_tape()
 
@@ -44,7 +44,7 @@ def benchmark_vqe(hyperparams={}):
 			* 'optimize': argument for grouping the observables composing the Hamiltonian
 	"""
 
-	Hamiltonian, ansatz, params, n_steps, device, interface, diff_method, optimize = _set_defaults(hyperparams)
+	Hamiltonian, ansatz, params, n_steps, device, interface, diff_method, optimize = _vqe_defaults(hyperparams)
 
 	cost_fn = qml.ExpvalCost(ansatz, Hamiltonian, device, interface, diff_method, optimize)
 
