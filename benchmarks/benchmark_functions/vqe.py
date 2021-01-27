@@ -1,4 +1,4 @@
-# Copyright 2018-2020 Xanadu Quantum Technologies Inc.
+# Copyright 2018-2021 Xanadu Quantum Technologies Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,26 +27,27 @@ def benchmark_vqe(hyperparams={}):
 	Args:
 		hyperparams (dict): hyperparameters to configure this benchmark
 
-			* 'Hamiltonian': Molecular Hamiltonian.
+			* 'Hamiltonian': Molecular Hamiltonian represented as a PennyLane Hamiltonian class
 
-			* 'n_steps': Number of VQE steps.
+			* 'ansatz': VQE ansatz
 
-			* 'diff_method': name of differentiation method
+			* 'params': Numpy array of trainable parameters that is fed into the ansatz.
 
-			* 'device': device on which the circuit is run, or valid device name
+			* 'n_steps': Number of VQE steps
 
-			* 'interface': name of the interface to use
+			* 'device': Device on which the circuit is run, or valid device name
 
-			* 'template': Template to use. The template must take the trainable parameters as its only argument.
+			* 'interface': Name of the interface to use
 
-			* 'params': Numpy array of trainable parameters that is fed into the template.
+			* 'diff_method': Name of differentiation method
 
-			* 'measurement': measurement function like `qml.expval(qml.PauliZ(0)))`
+			* 'optimize': argument for grouping the observables composing the Hamiltonian
 	"""
 
-	Hamiltonian, n_steps, interface, params, optimize, diff_method, device, ansatz = _set_defaults(hyperparams)
+	Hamiltonian, ansatz, params, n_steps, device, interface, diff_method, optimize = _set_defaults(hyperparams)
 
 	cost_fn = qml.ExpvalCost(ansatz, Hamiltonian, device, interface, diff_method, optimize)
+
 	opt = qml.GradientDescentOptimizer(stepsize=0.4)
 
 	for n in range(n_steps):

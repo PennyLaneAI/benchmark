@@ -1,4 +1,4 @@
-# Copyright 2018-2020 Xanadu Quantum Technologies Inc.
+# Copyright 2018-2021 Xanadu Quantum Technologies Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,12 +20,11 @@ from pennylane.templates.subroutines import UCCSD
 from functools import partial
 from pennylane import Identity, PauliX, PauliY, PauliZ
 from pennylane import qchem
-from pennylane.templates.decorator import template as template_decorator
 
 
 def _set_defaults(hyperparams):
 	"""Uses hyperparameters or defaults to construct the components of the VQE circuit for the
-	hydrogen molecule with sto-3g sis set.
+	hydrogen molecule with the sto-3g basis set.
 
 	Args:
 		hyperparams (dict): hyperparameters provided by user
@@ -35,41 +34,35 @@ def _set_defaults(hyperparams):
 						  0.17001485, 0.04491735, -0.04491735, -0.04491735, 0.04491735,
 						  0.12222641, 0.16714376, 0.16714376, 0.12222641, 0.17570278])
 
-	H_ops = [Identity(wires=[0]),
-			 PauliZ(wires=[0]),
-			 PauliZ(wires=[1]),
-			 PauliZ(wires=[2]),
-			 PauliZ(wires=[3]),
-			 PauliZ(wires=[0]) @ PauliZ(wires=[1]),
+	H_ops = [Identity(wires=[0]), PauliZ(wires=[0]), PauliZ(wires=[1]), PauliZ(wires=[2]),
+			 PauliZ(wires=[3]), PauliZ(wires=[0]) @ PauliZ(wires=[1]),
 			 PauliY(wires=[0]) @ PauliX(wires=[1]) @ PauliX(wires=[2]) @ PauliY(wires=[3]),
 			 PauliY(wires=[0]) @ PauliY(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[3]),
 			 PauliX(wires=[0]) @ PauliX(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[3]),
 			 PauliX(wires=[0]) @ PauliY(wires=[1]) @ PauliY(wires=[2]) @ PauliX(wires=[3]),
-			 PauliZ(wires=[0]) @ PauliZ(wires=[2]),
-			 PauliZ(wires=[0]) @ PauliZ(wires=[3]),
-			 PauliZ(wires=[1]) @ PauliZ(wires=[2]),
-			 PauliZ(wires=[1]) @ PauliZ(wires=[3]),
+			 PauliZ(wires=[0]) @ PauliZ(wires=[2]), PauliZ(wires=[0]) @ PauliZ(wires=[3]),
+			 PauliZ(wires=[1]) @ PauliZ(wires=[2]), PauliZ(wires=[1]) @ PauliZ(wires=[3]),
 			 PauliZ(wires=[2]) @ PauliZ(wires=[3])]
 
 	electrons = 2
 	qubits = 4
 
-	singles, doubles = qchem.excitations(electrons, qubits, delta_sz=0)
+	singles, doubles = qchem.excitations(2, 4, delta_sz=0)
 	s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
 	hf_state = qchem.hf_state(electrons, qubits)
 	ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
 
 	Hamiltonian = hyperparams.pop('Hamiltonian', qml.Hamiltonian(H_coeffs, H_ops))
-	n_steps = hyperparams.pop('n_steps', 1)
-	interface = hyperparams.pop('interface', 'autograd')
-	params = hyperparams.pop('params', np.random.normal(0, np.pi, len(singles) + len(doubles)))
-	optimize = hyperparams.pop('optimize', True)
-	diff_method = hyperparams.pop('diff_method', 'best')
-	device = hyperparams.pop('device', 'default.qubit')
 	ansatz = hyperparams.pop('template', ansatz)
+	params = hyperparams.pop('params', np.random.normal(0, np.pi, len(singles) + len(doubles)))
+	n_steps = hyperparams.pop('n_steps', 1)
+	device = hyperparams.pop('device', 'default.qubit')
+	interface = hyperparams.pop('interface', 'autograd')
+	diff_method = hyperparams.pop('diff_method', 'best')
+	optimize = hyperparams.pop('optimize', True)
 
 	# if device name is given, create device
 	if isinstance(device, str):
 		device = qml.device(device, wires=qubits)
 
-	return Hamiltonian, n_steps, interface, params, optimize, diff_method, device, ansatz
+	return Hamiltonian, ansatz, params, n_steps, device, interface, diff_method, optimize
