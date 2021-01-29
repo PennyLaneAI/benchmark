@@ -85,18 +85,21 @@ def _vqe_defaults(hyperparams):
 	s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
 	hf_state = qchem.hf_state(electrons, qubits)
 	ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
+	params = np.array([3.14545258, 3.13766988, -0.21446816])
 
 	Hamiltonian = hyperparams.pop('Hamiltonian', qml.Hamiltonian(H_coeffs, H_ops))
 	ansatz = hyperparams.pop('template', ansatz)
-	params = hyperparams.pop('params', np.random.normal(0, np.pi, len(singles) + len(doubles)))
+	params = hyperparams.pop('params', params)
 	n_steps = hyperparams.pop('n_steps', 1)
 	device = hyperparams.pop('device', 'default.qubit')
 	interface = hyperparams.pop('interface', 'autograd')
 	diff_method = hyperparams.pop('diff_method', 'best')
 	optimize = hyperparams.pop('optimize', True)
 
+	options_dict = {'interface': interface, 'diff_method': diff_method, 'optimize': optimize}
+
 	# if device name is given, create device
 	if isinstance(device, str):
 		device = qml.device(device, wires=qubits)
 
-	return Hamiltonian, ansatz, params, n_steps, device, interface, diff_method, optimize
+	return Hamiltonian, ansatz, params, n_steps, device, options_dict

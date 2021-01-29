@@ -44,12 +44,11 @@ def benchmark_vqe(hyperparams={}):
 			* 'optimize': argument for grouping the observables composing the Hamiltonian
 	"""
 
-	Hamiltonian, ansatz, params, n_steps, device, interface, diff_method, optimize = _vqe_defaults(hyperparams)
+	Hamiltonian, ansatz, params, n_steps, device, options_dict = _vqe_defaults(hyperparams)
 
-	cost_fn = qml.ExpvalCost(ansatz, Hamiltonian, device, interface, diff_method, optimize)
+	cost_fn = qml.ExpvalCost(ansatz, Hamiltonian, device, **options_dict)
 
 	opt = qml.GradientDescentOptimizer(stepsize=0.4)
 
 	for n in range(n_steps):
-		params = opt.step(cost_fn, params)
-		energy = cost_fn(params)
+		params, energy = opt.step_and_cost(cost_fn, params)
