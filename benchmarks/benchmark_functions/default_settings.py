@@ -81,7 +81,7 @@ def _vqe_defaults(hyperparams):
 	electrons = 2
 	qubits = 4
 
-	singles, doubles = qchem.excitations(2, 4, delta_sz=0)
+	singles, doubles = qchem.excitations(2, 4)
 	s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
 	hf_state = qchem.hf_state(electrons, qubits)
 	ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
