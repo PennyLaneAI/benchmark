@@ -25,7 +25,7 @@ from functools import partial
 from pennylane import Identity, PauliX, PauliY, PauliZ
 from pennylane import qchem
 
-def _set_defaults(hyperparams):
+def _core_defaults(hyperparams):
 	"""Uses hyperparameters or defaults to construct the components of the circuit.
 
 	Args:

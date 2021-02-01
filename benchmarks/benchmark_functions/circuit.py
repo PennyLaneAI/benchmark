@@ -18,7 +18,7 @@ import pennylane as qml
 import tensorflow as tf
 import torch
 from pennylane import numpy as pnp
-from .default_settings import _set_defaults
+from .default_settings import _core_defaults
 
 qml.enable_tape()
 
@@ -53,7 +53,7 @@ def benchmark_circuit(hyperparams={}, num_repeats=1):
 		num_repeats (int): How often the same circuit is evaluated in a for loop. Default is 1.
 	"""
 
-	device, diff_method, interface, params, template, measurement = _set_defaults(hyperparams)
+	device, diff_method, interface, params, template, measurement = _core_defaults(hyperparams)
 
 	for _ in range(num_repeats):
 

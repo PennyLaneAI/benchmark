@@ -17,8 +17,6 @@ Benchmarks for VQE simulations.
 import pennylane as qml
 from .default_settings import _vqe_defaults
 
-qml.enable_tape()
-
 
 def benchmark_vqe(hyperparams={}):
 	"""
