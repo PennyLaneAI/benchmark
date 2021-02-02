@@ -15,5 +15,19 @@
 Define asv benchmark suite that estimates the speed of applications.
 """
 
+from ..benchmark_functions.vqe import benchmark_vqe
 
 
+class VQE:
+    """Benchmark the VQE algorithm using different number of optimization steps and grouping
+     options."""
+
+    params = ([1, 3], [False, True])
+    param_names = ['n_steps', 'optimize']
+
+    def time_hydrogen(self, n_steps, optimize):
+        """Time a VQE algorithm with the UCCSD ansatz for computing the ground state energy of the
+         hydrogen molecule."""
+        hyperparams = {'n_steps': n_steps,
+                       'optimize': optimize}
+        benchmark_vqe(hyperparams)
