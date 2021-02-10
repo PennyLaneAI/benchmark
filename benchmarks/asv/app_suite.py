@@ -16,6 +16,7 @@ Define asv benchmark suite that estimates the speed of applications.
 """
 
 from ..benchmark_functions.vqe import benchmark_vqe
+from ..benchmark_functions.qaoa import benchmark_qaoa
 
 
 class VQE:
@@ -31,3 +32,16 @@ class VQE:
         hyperparams = {'n_steps': n_steps,
                        'optimize': optimize}
         benchmark_vqe(hyperparams)
+
+
+class QAOA:
+    """Benchmark the QAOA algorithm using different number of optimization steps and layers."""
+
+    params = ([1, 2], [1, 2])
+    param_names = ['n_steps', 'n_layers']
+
+    def time_minvertex(self, n_steps, n_layers):
+        """Time a QAOA algorithm for finding the minimum vertex cover of a graph."""
+        hyperparams = {'n_steps': n_steps,
+                       'n_layers': n_layers}
+        benchmark_qaoa(hyperparams)
