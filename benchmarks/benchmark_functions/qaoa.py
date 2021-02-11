@@ -26,11 +26,11 @@ def benchmark_qaoa(hyperparams={}):
 	Args:
 		hyperparams (dict): hyperparameters to configure this benchmark
 
-			* 'graph': graph represented as a NetworkX Graph class
+			* 'graph': Graph represented as a NetworkX Graph class
 
-			* 'n_layers': Number of layers in the QAOA circuit.
+			* 'n_layers': Number of layers in the QAOA circuit
 
-			* 'params': Numpy array of trainable parameters that is fed into the circuit.
+			* 'params': Numpy array of trainable parameters that is fed into the circuit
 
 			* 'n_steps': Number of QAOA steps
 

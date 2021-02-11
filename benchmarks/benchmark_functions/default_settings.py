@@ -113,15 +113,16 @@ def _qaoa_defaults(hyperparams):
 	Args:
 		hyperparams (dict): hyperparameters provided by user
 	"""
+	graph = nx.Graph([(0, 1), (1, 2), (2, 0), (2, 3)])
+	n_layers = 2
+
+	graph = hyperparams.pop('graph', graph)
+	n_layers = hyperparams.pop('n_layers', n_layers)
+	params = hyperparams.pop('params', [[0.5] * n_layers, [0.5] * n_layers])
 	n_steps = hyperparams.pop('n_steps', 1)
-	n_layers = hyperparams.pop('n_layers', 2)
 	device = hyperparams.pop('device', 'default.qubit')
 	interface = hyperparams.pop('interface', 'autograd')
 	diff_method = hyperparams.pop('diff_method', 'best')
-
-	graph = nx.Graph([(0, 1), (1, 2), (2, 0), (2, 3)])
-
-	params = [[0.5] * n_layers, [0.5] * n_layers]
 
 	# if device name is given, create device
 	if isinstance(device, str):
