@@ -63,9 +63,4 @@ def benchmark_qaoa(hyperparams={}):
 	for n in range(n_steps):
 		params = opt.step(cost_fn, params)
 
-	@qml.qnode(device)
-	def probability_circuit(gamma, alpha):
-		circuit([gamma, alpha])
-		return qml.probs(wires=wires)
-
-	probs = probability_circuit(params[0], params[1])
+	expval = cost_fn(params)
