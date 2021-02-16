@@ -41,7 +41,7 @@ class QAOA:
     param_names = ['n_steps', 'n_layers']
 
     def time_minvertex(self, n_steps, n_layers):
-        """Time a QAOA algorithm for finding the minimum vertex cover of a graph."""
+        """Time a QAOA algorithm for the MaxCut problem ."""
         hyperparams = {'n_steps': n_steps,
                        'n_layers': n_layers}
         benchmark_qaoa(hyperparams)
