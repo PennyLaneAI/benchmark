@@ -15,8 +15,9 @@
 Benchmarks for QAOA optimizations.
 """
 import pennylane as qml
-from pennylane import numpy as np
+from pennylane import qaoa
 from .default_settings import _qaoa_defaults
+from pennylane import numpy as np
 
 
 def benchmark_qaoa(hyperparams={}):
@@ -34,7 +35,7 @@ def benchmark_qaoa(hyperparams={}):
 
 			* 'n_steps': Number of QAOA steps
 
-			* 'device': Device on which the circuit is run, or valid device name
+			* 'device': Device on which the circuit is run
 
 			* 'interface': Name of the interface to use
 
@@ -43,31 +44,23 @@ def benchmark_qaoa(hyperparams={}):
 
 	graph, n_layers, params, n_steps, device, options_dict = _qaoa_defaults(hyperparams)
 
-	n_wires = len(graph)
+	H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
 
-	def U_B(beta):
-		for wire in range(n_wires):
-			qml.RX(2 * beta, wires=wire)
+	n_wires = 4
 
-	def U_C(gamma):
-		for edge in graph:
-			wire1 = edge[0]
-			wire2 = edge[1]
-			qml.CNOT(wires=[wire1, wire2])
-			qml.RZ(gamma, wires=wire2)
-			qml.CNOT(wires=[wire1, wire2])
+	def qaoa_layer(gamma, alpha):
+		qaoa.cost_layer(gamma, H_cost)
+		qaoa.mixer_layer(alpha, H_mixer)
 
 	def comp_basis_measurement(wires):
+		n_wires = len(wires)
 		return qml.Hermitian(np.diag(range(2 ** n_wires)), wires=wires)
 
 	@qml.qnode(device)
-	def circuit(gammas, betas, n_layers):
-		for wire in range(n_wires):
-			qml.Hadamard(wires=wire)
-		for i in range(n_layers):
-			U_C(gammas[i])
-			U_B(betas[i])
+	def circuit(params):
+		for w in range(n_wires):
+			qml.Hadamard(wires=w)
+		qml.layer(qaoa_layer, n_layers, params[0], params[1])
 		return qml.sample(comp_basis_measurement(range(n_wires)))
 
-	for _ in range(n_steps):
-		circuit(params[0], params[1], n_layers=n_layers)
+	circuit(params)
