@@ -35,13 +35,12 @@ class VQE:
 
 
 class QAOA:
-    """Benchmark the QAOA algorithm using different number of optimization steps and layers."""
+    """Benchmark the QAOA algorithm using different number of layers."""
 
-    params = ([1, 2], [1, 2])
-    param_names = ['n_steps', 'n_layers']
+    params = ([1, 5])
+    param_names = ['n_layers']
 
-    def time_minvertex(self, n_steps, n_layers):
+    def time_minvertex(self, n_layers):
         """Time a QAOA algorithm for finding the minimum vertex cover of a graph."""
-        hyperparams = {'n_steps': n_steps,
-                       'n_layers': n_layers}
+        hyperparams = {'n_layers': n_layers}
         benchmark_qaoa(hyperparams)
