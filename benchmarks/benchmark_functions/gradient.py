@@ -20,7 +20,6 @@ import torch
 from pennylane import numpy as pnp
 from .default_settings import _core_defaults
 
-qml.enable_tape()
 
 
 def benchmark_gradient(hyperparams={}, num_repeats=1):

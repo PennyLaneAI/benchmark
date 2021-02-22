@@ -23,8 +23,6 @@ from pennylane import numpy as pnp
 from .default_settings import _core_defaults
 
 
-qml.enable_tape()
-
 
 def benchmark_optimization(hyperparams={}, n_steps=20, num_repeats=1):
 	"""Trains a quantum circuit for n_steps steps with a gradient descent optimizer.

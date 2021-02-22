@@ -23,8 +23,6 @@ from pennylane import numpy as pnp
 from .default_settings import _core_defaults
 
 
-qml.enable_tape()
-
 
 def _machine_learning_autograd(circuit, params):
 	return NotImplemented
