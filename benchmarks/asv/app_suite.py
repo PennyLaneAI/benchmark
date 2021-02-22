@@ -16,6 +16,8 @@ Define asv benchmark suite that estimates the speed of applications.
 """
 
 from ..benchmark_functions.vqe import benchmark_vqe
+from ..benchmark_functions.qaoa import benchmark_qaoa
+import networkx as nx
 
 
 class VQE:
@@ -31,3 +33,26 @@ class VQE:
         hyperparams = {'n_steps': n_steps,
                        'optimize': optimize}
         benchmark_vqe(hyperparams)
+
+class QAOA_heavy:
+    """Benchmark the QAOA algorithm for finding the minimum vertex cover of a large graph using
+    a large number of layers."""
+
+    params = ([5])
+    param_names = ['n_layers']
+
+    graph = nx.complete_graph(20)
+
+    def time_minvertex(self, n_layers):
+        """Time a QAOA algorithm for finding the minimum vertex cover of a graph."""
+        hyperparams = {'n_layers': n_layers,
+                       'graph': self.graph}
+        benchmark_qaoa(hyperparams)
+
+
+    def peakmem_minvertex(self, n_layers):
+        """Benchmark the peak memory usage of a QAOA algorithm for finding the minimum vertex cover
+        of a graph."""
+        hyperparams = {'n_layers': n_layers,
+                       'graph': self.graph}
+        benchmark_qaoa(hyperparams)
