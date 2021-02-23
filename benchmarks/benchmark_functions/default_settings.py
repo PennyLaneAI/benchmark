@@ -25,6 +25,8 @@ from functools import partial
 from pennylane import Identity, PauliX, PauliY, PauliZ
 from pennylane import qchem
 
+import networkx as nx
+
 def _core_defaults(hyperparams):
 	"""Uses hyperparameters or defaults to construct the components of the circuit.
 
@@ -63,7 +65,6 @@ def _vqe_defaults(hyperparams):
 	Args:
 		hyperparams (dict): hyperparameters provided by user
 	"""
-
 	H_coeffs = np.array([-0.05963862, 0.17575739, 0.17575739, -0.23666489, -0.23666489,
 						  0.17001485, 0.04491735, -0.04491735, -0.04491735, 0.04491735,
 						  0.12222641, 0.16714376, 0.16714376, 0.12222641, 0.17570278])
@@ -103,3 +104,28 @@ def _vqe_defaults(hyperparams):
 		device = qml.device(device, wires=qubits)
 
 	return Hamiltonian, ansatz, params, n_steps, device, options_dict
+
+
+def _qaoa_defaults(hyperparams):
+	"""Uses hyperparameters or defaults to construct the components of the QAOA circuit for finding
+	the minimum vertex cover of a graph.
+
+	Args:
+		hyperparams (dict): hyperparameters provided by user
+	"""
+	graph = nx.Graph([(0, 1), (1, 2), (2, 0), (2, 3)])
+
+	graph = hyperparams.pop('graph', graph)
+	n_layers = hyperparams.pop('n_layers', 2)
+	params = hyperparams.pop('params', [[0.5] * n_layers, [0.5] * n_layers])
+	device = hyperparams.pop('device', 'default.qubit')
+	interface = hyperparams.pop('interface', 'autograd')
+	diff_method = hyperparams.pop('diff_method', 'best')
+
+	# if device name is given, create device
+	if isinstance(device, str):
+		device = qml.device(device, wires=len(graph.nodes), analytic=False)
+
+	options_dict = {'interface': interface, 'diff_method': diff_method}
+
+	return graph, n_layers, params, device, options_dict
