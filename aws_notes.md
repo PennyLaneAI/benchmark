@@ -39,6 +39,8 @@ Create a Launch template
 
 Custom AMI?
 
+One-time spot requests, the memory will be deleted after.  We could make a persistent one?  Or have the hard drive memory persistent?
+
 ### ssh
 
 We run commands on the instance using ssh.  
@@ -132,6 +134,8 @@ Pin to multiple CPU's?
 *Security Group*: virtual firewall to control incoming and outgoing traffic
 
 *Processor affinity*: CPU pining, enables the binding and unbinding of a process or a thread to a CPU or a range of CPUs
+
+*EBS*: Elastic Block Storage persistent block storage`
 
 ## Links
 
