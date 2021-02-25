@@ -65,7 +65,6 @@ def _vqe_defaults(hyperparams):
 	Args:
 		hyperparams (dict): hyperparameters provided by user
 	"""
-
 	H_coeffs = np.array([-0.05963862, 0.17575739, 0.17575739, -0.23666489, -0.23666489,
 						  0.17001485, 0.04491735, -0.04491735, -0.04491735, 0.04491735,
 						  0.12222641, 0.16714376, 0.16714376, 0.12222641, 0.17570278])
@@ -125,7 +124,7 @@ def _qaoa_defaults(hyperparams):
 
 	# if device name is given, create device
 	if isinstance(device, str):
-			device = qml.device(device, wires=len(graph.nodes), analytic=False)
+		device = qml.device(device, wires=len(graph.nodes), analytic=False)
 
 	options_dict = {'interface': interface, 'diff_method': diff_method}
 
