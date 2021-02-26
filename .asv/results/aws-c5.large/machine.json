@@ -1,0 +1,9 @@
+{
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) Platinum 8124M CPU @ 3.00GHz",
+    "machine": "aws-c5.large",
+    "num_cpu": "2",
+    "os": "Linux 4.14.219-161.340.amzn2.x86_64",
+    "ram": "3793548",
+    "version": 1
+}
