@@ -16,6 +16,7 @@ git clone https://github.com/PennyLaneAI/benchmark.git
 sudo vim /etc/default/grub
 ```
 
+In the file:
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="console=tty0 console=ttyS0,115200n8 net.ifnames=0 biosdevname=0 nvme_core.io_timeout=4294967295 intel_idle.max_cstate=1"
 GRUB_TIMEOUT=0
@@ -26,6 +27,8 @@ GRUB_TIMEOUT=0
 grub2-mkconfig -o /boot/grub2/grub.cfg
 sudo reboot
 ```
+
+Disable turbobooost? not working
 
 ## Each time:
 
@@ -43,7 +46,7 @@ git pull
 asv run v0.14.0..master --interleave-processes --parallel
 
 
-git add -force .asv/results
+git add --force .asv/results
 git push
 asv gh-pages --rewrite
 exit
