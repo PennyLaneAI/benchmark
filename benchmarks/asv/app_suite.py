@@ -51,38 +51,40 @@ class VQE_heavy:
      with 2 active electrons and 8 active spin-orbitals. The sto-3g basis set and UCCSD ansatz are
      used."""
 
-    params = ([3], [False, True])
-    param_names = ['n_steps', 'optimize']
+    params = ([False, True])
+    param_names = ['optimize']
 
-    H_coeffs = np.array([-6.74845266e+00, -1.02553930e-01, 1.00530907e-02, 1.00530907e-02,
-                         -1.02553930e-01, 1.00530907e-02, 1.00530907e-02, -2.76355319e-01,
-                         -2.76355319e-01, -2.96925596e-01, -2.96925596e-01, -2.96925596e-01,
-                         -2.96925596e-01, 1.21916192e-01, 1.21233148e-02, 1.21233148e-02,
-                         1.21233148e-02, 1.21233148e-02, 3.25324294e-03, -3.25324294e-03,
-                         -3.25324294e-03, 3.25324294e-03, 5.86266678e-03, -5.86266678e-03,
-                         -5.86266678e-03, 5.86266678e-03, 5.86266678e-03, -5.86266678e-03,
-                         -5.86266678e-03, 5.86266678e-03, 5.26857432e-02, 5.59389862e-02,
-                         -1.85422006e-03, -1.85422006e-03, 4.81813200e-03, -4.81813200e-03,
-                         -4.81813200e-03, 4.81813200e-03, 4.81813200e-03, -4.81813200e-03,
-                         -4.81813200e-03, 4.81813200e-03, 6.17431075e-02, 3.39017831e-03,
-                         3.39017831e-03, 6.76057742e-02, -1.42795369e-03, -1.42795369e-03,
-                         6.17431075e-02, 3.39017831e-03, 3.39017831e-03, 6.76057742e-02,
-                         -1.42795369e-03, -1.42795369e-03, 5.59389862e-02, -1.85422006e-03,
-                         -1.85422006e-03, -4.81813200e-03, -4.81813200e-03, -4.81813200e-03,
-                         -4.81813200e-03, -4.81813200e-03, -4.81813200e-03, -4.81813200e-03,
-                         -4.81813200e-03, 5.26857432e-02, 6.76057742e-02, -1.42795369e-03,
-                         -1.42795369e-03, 6.17431075e-02, 3.39017831e-03, 3.39017831e-03,
-                         6.76057742e-02, -1.42795369e-03, -1.42795369e-03, 6.17431075e-02,
-                         3.39017831e-03, 3.39017831e-03, 8.44840116e-02, 1.03194543e-02,
-                         -1.03194543e-02, -1.03194543e-02, 1.03194543e-02, 1.03194543e-02,
-                         -1.03194543e-02, -1.03194543e-02, 1.03194543e-02, 6.01815510e-02,
-                         7.05010052e-02, 6.01815510e-02, 7.05010052e-02, 7.05010052e-02,
-                         6.01815510e-02, 7.05010052e-02, 6.01815510e-02, 7.82363778e-02,
-                         4.21728488e-03, -4.21728488e-03, -4.21728488e-03, 4.21728488e-03,
-                         6.55845232e-02, 6.98018080e-02, 6.98018080e-02, 6.55845232e-02,
-                         7.82363778e-02])
+    def setup(self, optimize):
 
-    H_ops = [Identity(wires=[0]),
+        H_coeffs = np.array([-6.74845266e+00, -1.02553930e-01, 1.00530907e-02, 1.00530907e-02,
+                             -1.02553930e-01, 1.00530907e-02, 1.00530907e-02, -2.76355319e-01,
+                             -2.76355319e-01, -2.96925596e-01, -2.96925596e-01, -2.96925596e-01,
+                             -2.96925596e-01, 1.21916192e-01, 1.21233148e-02, 1.21233148e-02,
+                             1.21233148e-02, 1.21233148e-02, 3.25324294e-03, -3.25324294e-03,
+                             -3.25324294e-03, 3.25324294e-03, 5.86266678e-03, -5.86266678e-03,
+                             -5.86266678e-03, 5.86266678e-03, 5.86266678e-03, -5.86266678e-03,
+                             -5.86266678e-03, 5.86266678e-03, 5.26857432e-02, 5.59389862e-02,
+                             -1.85422006e-03, -1.85422006e-03, 4.81813200e-03, -4.81813200e-03,
+                             -4.81813200e-03, 4.81813200e-03, 4.81813200e-03, -4.81813200e-03,
+                             -4.81813200e-03, 4.81813200e-03, 6.17431075e-02, 3.39017831e-03,
+                             3.39017831e-03, 6.76057742e-02, -1.42795369e-03, -1.42795369e-03,
+                             6.17431075e-02, 3.39017831e-03, 3.39017831e-03, 6.76057742e-02,
+                             -1.42795369e-03, -1.42795369e-03, 5.59389862e-02, -1.85422006e-03,
+                             -1.85422006e-03, -4.81813200e-03, -4.81813200e-03, -4.81813200e-03,
+                             -4.81813200e-03, -4.81813200e-03, -4.81813200e-03, -4.81813200e-03,
+                             -4.81813200e-03, 5.26857432e-02, 6.76057742e-02, -1.42795369e-03,
+                             -1.42795369e-03, 6.17431075e-02, 3.39017831e-03, 3.39017831e-03,
+                             6.76057742e-02, -1.42795369e-03, -1.42795369e-03, 6.17431075e-02,
+                             3.39017831e-03, 3.39017831e-03, 8.44840116e-02, 1.03194543e-02,
+                             -1.03194543e-02, -1.03194543e-02, 1.03194543e-02, 1.03194543e-02,
+                             -1.03194543e-02, -1.03194543e-02, 1.03194543e-02, 6.01815510e-02,
+                             7.05010052e-02, 6.01815510e-02, 7.05010052e-02, 7.05010052e-02,
+                             6.01815510e-02, 7.05010052e-02, 6.01815510e-02, 7.82363778e-02,
+                             4.21728488e-03, -4.21728488e-03, -4.21728488e-03, 4.21728488e-03,
+                             6.55845232e-02, 6.98018080e-02, 6.98018080e-02, 6.55845232e-02,
+                             7.82363778e-02])
+
+        H_ops = [Identity(wires=[0]),
              PauliZ(wires=[0]),
              PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliY(wires=[2]),
              PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliX(wires=[2]),
@@ -196,43 +198,41 @@ class VQE_heavy:
              PauliZ(wires=[5]) @ PauliZ(wires=[7]),
              PauliZ(wires=[6]) @ PauliZ(wires=[7])]
 
-    Hamiltonian = qml.Hamiltonian(H_coeffs, H_ops)
+        electrons = 2
+        qubits = 8
 
-    electrons = 2
-    qubits = 8
+        singles, doubles = qchem.excitations(electrons, qubits)
+        s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
+        hf_state = qchem.hf_state(electrons, qubits)
 
-    singles, doubles = qchem.excitations(electrons, qubits)
-    s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
-    hf_state = qchem.hf_state(electrons, qubits)
+        self.ham = qml.Hamiltonian(H_coeffs, H_ops)
 
-    ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
+        self.ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
 
-    parameters = np.array([6.39225682, -0.99471664, -4.2026237, -4.48579097, 9.8033157,
-                           1.19030864, -3.89924719, 7.25037131, -0.95897967, -0.75287453,
-                           0.92252162, 1.10633277, 0.94911997, 1.09138887, 5.27297259])
+        self.parameters = np.array([6.39225682, -0.99471664, -4.2026237, -4.48579097, 9.8033157,
+                               1.19030864, -3.89924719, 7.25037131, -0.95897967, -0.75287453,
+                               0.92252162, 1.10633277, 0.94911997, 1.09138887, 5.27297259])
 
-    device = qml.device('default.qubit', wires=qubits)
+        self.device = qml.device('default.qubit', wires=qubits)
 
-    def time_lih(self, n_steps, optimize):
+    def time_lih(self, optimize):
         """Time the VQE algorithm for the lithium hydride molecule."""
 
-        hyperparams = {'Hamiltonian': self.Hamiltonian,
+        hyperparams = {'ham': self.ham,
                        'ansatz': self.ansatz,
                        'params': self.parameters,
                        'device': self.device,
-                       'n_steps': n_steps,
                        'optimize': optimize}
 
         benchmark_vqe(hyperparams)
 
-    def peakmem_lih(self, n_steps, optimize):
+    def peakmem_lih(self, optimize):
         """Benchmark the peak memory usage of the VQE algorithm for the lithium hydride molecule."""
 
-        hyperparams = {'Hamiltonian': self.Hamiltonian,
+        hyperparams = {'ham': self.ham,
                        'ansatz': self.ansatz,
                        'params': self.parameters,
                        'device': self.device,
-                       'n_steps': n_steps,
                        'optimize': optimize}
 
         benchmark_vqe(hyperparams)
