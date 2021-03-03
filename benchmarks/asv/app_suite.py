@@ -34,38 +34,38 @@ class VQE:
         benchmark_vqe(hyperparams)
 
 class QAOA_light:
-    """Benchmark the QAOA algorithm using different number of layers."""
+    """Benchmark the QAOA algorithm for finding the minimum vertex cover of a small graph using
+    different number of layers."""
 
     params = ([1, 5])
     param_names = ['n_layers']
 
     def time_minvertex_light(self, n_layers):
-        """Time a QAOA algorithm for finding the minimum vertex cover of a graph."""
+        """Time a QAOA algorithm for finding the minimum vertex cover of a small graph."""
         hyperparams = {'n_layers': n_layers}
         benchmark_qaoa(hyperparams)
 
     def peakmem_minvertex_light(self, n_layers):
         """Benchmark the peak memory usage of QAOA algorithm for finding the minimum vertex cover of
-        a graph."""
+        a small graph."""
         hyperparams = {'n_layers': n_layers}
         benchmark_qaoa(hyperparams)
 
 class QAOA_heavy:
-    """Benchmark the QAOA algorithm for finding the minimum vertex cover of a large graph using
-    a large number of layers."""
+    """Benchmark the QAOA algorithm for finding the minimum vertex cover of a large graph."""
 
     n_layers = 5
     graph = nx.complete_graph(20)
 
     def time_minvertex_heavy(self):
-        """Time a QAOA algorithm for finding the minimum vertex cover of a graph."""
+        """Time a QAOA algorithm for finding the minimum vertex cover of a large graph."""
         hyperparams = {'n_layers': self.n_layers,
                        'graph': self.graph}
         benchmark_qaoa(hyperparams)
 
     def peakmem_minvertex_heavy(self):
         """Benchmark the peak memory usage of a QAOA algorithm for finding the minimum vertex cover
-        of a graph."""
+        of a large graph."""
         hyperparams = {'n_layers': self.n_layers,
                        'graph': self.graph}
         benchmark_qaoa(hyperparams)
