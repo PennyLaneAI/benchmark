@@ -25,7 +25,7 @@ def benchmark_vqe(hyperparams={}):
 	Args:
 		hyperparams (dict): hyperparameters to configure this benchmark
 
-			* 'Hamiltonian': Molecular Hamiltonian represented as a PennyLane Hamiltonian class
+			* 'ham': Molecular Hamiltonian represented as a PennyLane Hamiltonian class
 
 			* 'ansatz': VQE ansatz
 
@@ -42,9 +42,9 @@ def benchmark_vqe(hyperparams={}):
 			* 'optimize': argument for grouping the observables composing the Hamiltonian
 	"""
 
-	Hamiltonian, ansatz, params, n_steps, device, options_dict = _vqe_defaults(hyperparams)
+	ham, ansatz, params, n_steps, device, options_dict = _vqe_defaults(hyperparams)
 
-	cost_fn = qml.ExpvalCost(ansatz, Hamiltonian, device, **options_dict)
+	cost_fn = qml.ExpvalCost(ansatz, ham, device, **options_dict)
 
 	opt = qml.GradientDescentOptimizer(stepsize=0.4)
 
