@@ -49,9 +49,13 @@
     // followed by the pip installed packages).
     //
     "matrix": {
-        "pennylane": [],
         "tensorflow": [],
         "torch": [],
+        "networkx": [],
+        "git+https://github.com/PennyLaneAI/pennylane-lightning.git": [],
+        "git+https://github.com/PennyLaneAI/pennylane-qiskit.git": [],
+        "git+https://github.com/PennyLaneAI/pennylane-cirq.git": [],
+        "git+https://github.com/PennyLaneAI/pennylane-qulacs.git": [],
     },
 
     // -------------------------------------------------------------------

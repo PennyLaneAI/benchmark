@@ -20,6 +20,7 @@ from ..benchmark_functions.circuit import benchmark_circuit
 # The benchmark will fail if a device is not installed.
 DEVICES = ['default.qubit',
            'lightning.qubit',
+           'lightning.qubit.new',
            'default.mixed',
            'qiskit.aer',
            'qiskit.basicaer',
