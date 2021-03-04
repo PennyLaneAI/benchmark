@@ -19,9 +19,9 @@ import pennylane as qml
 from pennylane import numpy as np
 from pennylane.templates.subroutines import UCCSD
 from functools import partial
-from pennylane import Identity, PauliX, PauliY, PauliZ
 from pennylane import qchem
 from ..benchmark_functions.vqe import benchmark_vqe
+from ..benchmark_functions.hamiltonians import ham_lih
 from ..benchmark_functions.qaoa import benchmark_qaoa
 import networkx as nx
 
@@ -58,148 +58,6 @@ class VQE_heavy:
 
     def setup(self, optimize):
 
-        H_coeffs = np.array([-6.74845266e+00, -1.02553930e-01, 1.00530907e-02, 1.00530907e-02,
-                             -1.02553930e-01, 1.00530907e-02, 1.00530907e-02, -2.76355319e-01,
-                             -2.76355319e-01, -2.96925596e-01, -2.96925596e-01, -2.96925596e-01,
-                             -2.96925596e-01, 1.21916192e-01, 1.21233148e-02, 1.21233148e-02,
-                             1.21233148e-02, 1.21233148e-02, 3.25324294e-03, -3.25324294e-03,
-                             -3.25324294e-03, 3.25324294e-03, 5.86266678e-03, -5.86266678e-03,
-                             -5.86266678e-03, 5.86266678e-03, 5.86266678e-03, -5.86266678e-03,
-                             -5.86266678e-03, 5.86266678e-03, 5.26857432e-02, 5.59389862e-02,
-                             -1.85422006e-03, -1.85422006e-03, 4.81813200e-03, -4.81813200e-03,
-                             -4.81813200e-03, 4.81813200e-03, 4.81813200e-03, -4.81813200e-03,
-                             -4.81813200e-03, 4.81813200e-03, 6.17431075e-02, 3.39017831e-03,
-                             3.39017831e-03, 6.76057742e-02, -1.42795369e-03, -1.42795369e-03,
-                             6.17431075e-02, 3.39017831e-03, 3.39017831e-03, 6.76057742e-02,
-                             -1.42795369e-03, -1.42795369e-03, 5.59389862e-02, -1.85422006e-03,
-                             -1.85422006e-03, -4.81813200e-03, -4.81813200e-03, -4.81813200e-03,
-                             -4.81813200e-03, -4.81813200e-03, -4.81813200e-03, -4.81813200e-03,
-                             -4.81813200e-03, 5.26857432e-02, 6.76057742e-02, -1.42795369e-03,
-                             -1.42795369e-03, 6.17431075e-02, 3.39017831e-03, 3.39017831e-03,
-                             6.76057742e-02, -1.42795369e-03, -1.42795369e-03, 6.17431075e-02,
-                             3.39017831e-03, 3.39017831e-03, 8.44840116e-02, 1.03194543e-02,
-                             -1.03194543e-02, -1.03194543e-02, 1.03194543e-02, 1.03194543e-02,
-                             -1.03194543e-02, -1.03194543e-02, 1.03194543e-02, 6.01815510e-02,
-                             7.05010052e-02, 6.01815510e-02, 7.05010052e-02, 7.05010052e-02,
-                             6.01815510e-02, 7.05010052e-02, 6.01815510e-02, 7.82363778e-02,
-                             4.21728488e-03, -4.21728488e-03, -4.21728488e-03, 4.21728488e-03,
-                             6.55845232e-02, 6.98018080e-02, 6.98018080e-02, 6.55845232e-02,
-                             7.82363778e-02])
-
-        H_ops = [Identity(wires=[0]),
-             PauliZ(wires=[0]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliY(wires=[2]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliX(wires=[2]),
-             PauliZ(wires=[1]),
-             PauliY(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]),
-             PauliX(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]),
-             PauliZ(wires=[2]),
-             PauliZ(wires=[3]),
-             PauliZ(wires=[4]),
-             PauliZ(wires=[5]),
-             PauliZ(wires=[6]),
-             PauliZ(wires=[7]),
-             PauliZ(wires=[0]) @ PauliZ(wires=[1]),
-             PauliY(wires=[0]) @ PauliY(wires=[2]),
-             PauliX(wires=[0]) @ PauliX(wires=[2]),
-             PauliZ(wires=[0]) @ PauliY(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]),
-             PauliZ(wires=[0]) @ PauliX(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]),
-             PauliY(wires=[0]) @ PauliX(wires=[1]) @ PauliX(wires=[2]) @ PauliY(wires=[3]),
-             PauliY(wires=[0]) @ PauliY(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[3]),
-             PauliX(wires=[0]) @ PauliX(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[3]),
-             PauliX(wires=[0]) @ PauliY(wires=[1]) @ PauliY(wires=[2]) @ PauliX(wires=[3]),
-             PauliY(wires=[0]) @ PauliX(wires=[1]) @ PauliX(wires=[4]) @ PauliY(wires=[5]),
-             PauliY(wires=[0]) @ PauliY(wires=[1]) @ PauliX(wires=[4]) @ PauliX(wires=[5]),
-             PauliX(wires=[0]) @ PauliX(wires=[1]) @ PauliY(wires=[4]) @ PauliY(wires=[5]),
-             PauliX(wires=[0]) @ PauliY(wires=[1]) @ PauliY(wires=[4]) @ PauliX(wires=[5]),
-             PauliY(wires=[0]) @ PauliX(wires=[1]) @ PauliX(wires=[6]) @ PauliY(wires=[7]),
-             PauliY(wires=[0]) @ PauliY(wires=[1]) @ PauliX(wires=[6]) @ PauliX(wires=[7]),
-             PauliX(wires=[0]) @ PauliX(wires=[1]) @ PauliY(wires=[6]) @ PauliY(wires=[7]),
-             PauliX(wires=[0]) @ PauliY(wires=[1]) @ PauliY(wires=[6]) @ PauliX(wires=[7]),
-             PauliZ(wires=[0]) @ PauliZ(wires=[2]),
-             PauliZ(wires=[0]) @ PauliZ(wires=[3]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliY(wires=[2]) @ PauliZ(wires=[3]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliX(wires=[2]) @ PauliZ(wires=[3]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliX(
-                 wires=[4]) @ PauliY(wires=[5]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliX(
-                 wires=[4]) @ PauliX(wires=[5]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliY(
-                 wires=[4]) @ PauliY(wires=[5]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliY(
-                 wires=[4]) @ PauliX(wires=[5]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliX(
-                 wires=[6]) @ PauliY(wires=[7]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliX(
-                 wires=[6]) @ PauliX(wires=[7]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliY(
-                 wires=[6]) @ PauliY(wires=[7]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliY(
-                 wires=[6]) @ PauliX(wires=[7]),
-             PauliZ(wires=[0]) @ PauliZ(wires=[4]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliY(wires=[2]) @ PauliZ(wires=[4]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliX(wires=[2]) @ PauliZ(wires=[4]),
-             PauliZ(wires=[0]) @ PauliZ(wires=[5]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliY(wires=[2]) @ PauliZ(wires=[5]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliX(wires=[2]) @ PauliZ(wires=[5]),
-             PauliZ(wires=[0]) @ PauliZ(wires=[6]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliY(wires=[2]) @ PauliZ(wires=[6]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliX(wires=[2]) @ PauliZ(wires=[6]),
-             PauliZ(wires=[0]) @ PauliZ(wires=[7]),
-             PauliY(wires=[0]) @ PauliZ(wires=[1]) @ PauliY(wires=[2]) @ PauliZ(wires=[7]),
-             PauliX(wires=[0]) @ PauliZ(wires=[1]) @ PauliX(wires=[2]) @ PauliZ(wires=[7]),
-             PauliZ(wires=[1]) @ PauliZ(wires=[2]),
-             PauliY(wires=[1]) @ PauliY(wires=[3]),
-             PauliX(wires=[1]) @ PauliX(wires=[3]),
-             PauliY(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[4]) @ PauliY(wires=[5]),
-             PauliY(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[4]) @ PauliY(wires=[5]),
-             PauliX(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[4]) @ PauliX(wires=[5]),
-             PauliX(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[4]) @ PauliX(wires=[5]),
-             PauliY(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[6]) @ PauliY(wires=[7]),
-             PauliY(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[6]) @ PauliY(wires=[7]),
-             PauliX(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[6]) @ PauliX(wires=[7]),
-             PauliX(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[6]) @ PauliX(wires=[7]),
-             PauliZ(wires=[1]) @ PauliZ(wires=[3]),
-             PauliZ(wires=[1]) @ PauliZ(wires=[4]),
-             PauliY(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliZ(wires=[4]),
-             PauliX(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliZ(wires=[4]),
-             PauliZ(wires=[1]) @ PauliZ(wires=[5]),
-             PauliY(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliZ(wires=[5]),
-             PauliX(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliZ(wires=[5]),
-             PauliZ(wires=[1]) @ PauliZ(wires=[6]),
-             PauliY(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliZ(wires=[6]),
-             PauliX(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliZ(wires=[6]),
-             PauliZ(wires=[1]) @ PauliZ(wires=[7]),
-             PauliY(wires=[1]) @ PauliZ(wires=[2]) @ PauliY(wires=[3]) @ PauliZ(wires=[7]),
-             PauliX(wires=[1]) @ PauliZ(wires=[2]) @ PauliX(wires=[3]) @ PauliZ(wires=[7]),
-             PauliZ(wires=[2]) @ PauliZ(wires=[3]),
-             PauliY(wires=[2]) @ PauliX(wires=[3]) @ PauliX(wires=[4]) @ PauliY(wires=[5]),
-             PauliY(wires=[2]) @ PauliY(wires=[3]) @ PauliX(wires=[4]) @ PauliX(wires=[5]),
-             PauliX(wires=[2]) @ PauliX(wires=[3]) @ PauliY(wires=[4]) @ PauliY(wires=[5]),
-             PauliX(wires=[2]) @ PauliY(wires=[3]) @ PauliY(wires=[4]) @ PauliX(wires=[5]),
-             PauliY(wires=[2]) @ PauliX(wires=[3]) @ PauliX(wires=[6]) @ PauliY(wires=[7]),
-             PauliY(wires=[2]) @ PauliY(wires=[3]) @ PauliX(wires=[6]) @ PauliX(wires=[7]),
-             PauliX(wires=[2]) @ PauliX(wires=[3]) @ PauliY(wires=[6]) @ PauliY(wires=[7]),
-             PauliX(wires=[2]) @ PauliY(wires=[3]) @ PauliY(wires=[6]) @ PauliX(wires=[7]),
-             PauliZ(wires=[2]) @ PauliZ(wires=[4]),
-             PauliZ(wires=[2]) @ PauliZ(wires=[5]),
-             PauliZ(wires=[2]) @ PauliZ(wires=[6]),
-             PauliZ(wires=[2]) @ PauliZ(wires=[7]),
-             PauliZ(wires=[3]) @ PauliZ(wires=[4]),
-             PauliZ(wires=[3]) @ PauliZ(wires=[5]),
-             PauliZ(wires=[3]) @ PauliZ(wires=[6]),
-             PauliZ(wires=[3]) @ PauliZ(wires=[7]),
-             PauliZ(wires=[4]) @ PauliZ(wires=[5]),
-             PauliY(wires=[4]) @ PauliX(wires=[5]) @ PauliX(wires=[6]) @ PauliY(wires=[7]),
-             PauliY(wires=[4]) @ PauliY(wires=[5]) @ PauliX(wires=[6]) @ PauliX(wires=[7]),
-             PauliX(wires=[4]) @ PauliX(wires=[5]) @ PauliY(wires=[6]) @ PauliY(wires=[7]),
-             PauliX(wires=[4]) @ PauliY(wires=[5]) @ PauliY(wires=[6]) @ PauliX(wires=[7]),
-             PauliZ(wires=[4]) @ PauliZ(wires=[6]),
-             PauliZ(wires=[4]) @ PauliZ(wires=[7]),
-             PauliZ(wires=[5]) @ PauliZ(wires=[6]),
-             PauliZ(wires=[5]) @ PauliZ(wires=[7]),
-             PauliZ(wires=[6]) @ PauliZ(wires=[7])]
-
         electrons = 2
         qubits = 8
 
@@ -207,7 +65,7 @@ class VQE_heavy:
         s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
         hf_state = qchem.hf_state(electrons, qubits)
 
-        self.ham = qml.Hamiltonian(H_coeffs, H_ops)
+        self.ham = ham_lih
 
         self.ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
 
