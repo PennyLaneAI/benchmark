@@ -76,26 +76,22 @@ def _machine_learning_tf(quantum_model, data):
 			loss = average_loss(w_quantum, w_classical)
 
 		grad_qu, grad_class = tape.gradient(loss, [w_quantum, w_classical])
-
-		w_quantum = w_quantum - 0.05 * grad_qu
-		w_classical = w_classical - 0.05 * grad_class
-		print(w_quantum)
-		print(w_classical)
-		print(average_loss(w_quantum, w_classical))
+		w_quantum.assign_sub(0.05 * grad_qu)
+		w_classical.assign_sub(0.05 * grad_class)
 
 
 def _machine_learning_torch(quantum_model, data):
 	"""ML example with torch interface."""
 
 	import torch
-	data = [[torch.tensor(x), torch.tensor(y)] for x, y in data]
+	data = [[torch.tensor(x, dtype=torch.double), torch.tensor(y, dtype=torch.double)] for x, y in data]
 
 	def hybrid_model(x, w_quantum, w_classical):
 		transformed_x = torch.matmul(w_classical, x)
 		return quantum_model(transformed_x, w_quantum)
 
 	def average_loss(w_quantum, w_classical):
-		c = torch.tensor(0)
+		c = torch.tensor(0, dtype=torch.double)
 		for x, y in data:
 			prediction = hybrid_model(x, w_quantum, w_classical)
 			c += (prediction - y) ** 2
@@ -103,15 +99,17 @@ def _machine_learning_torch(quantum_model, data):
 
 	n_features = len(data[0][0])
 
-	w_quantum = torch.tensor(random(size=(n_features, n_features)), requires_grad=True)
-	w_classical = torch.tensor(random(size=(n_features, n_features)), requires_grad=True)
+	w_quantum = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
+	w_classical = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
 
 	for i in range(50):
-		average_loss.backward()
+		loss = average_loss(w_quantum, w_classical)
+		loss.backward()
 
-		w_quantum = w_quantum - 0.05 * w_quantum.grad
-		w_classical = w_classical - 0.05 * w_classical.grad
-		print("torch")
+		w_quantum.data -= 0.05 * w_quantum.grad
+		w_classical.data -= 0.05 * w_classical.grad
+		w_quantum.grad = None
+		w_classical.grad = None
 
 
 def benchmark_machine_learning(hyperparams={}, num_repeats=1):
