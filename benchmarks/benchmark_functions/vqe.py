@@ -50,5 +50,3 @@ def benchmark_vqe(hyperparams={}):
 
 	for _ in range(n_steps):
 		params, energy = opt.step_and_cost(cost_fn, params)
-
-	print(params, energy)
