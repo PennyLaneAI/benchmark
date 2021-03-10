@@ -31,6 +31,12 @@ class CircuitEvaluation:
                        'n_layers': n_layers}
         benchmark_circuit(hyperparams)
 
+    def peakmem_circuit(self, n_wires, n_layers):
+        """Time a simple default circuit."""
+        hyperparams = {'n_wires': n_wires,
+                       'n_layers': n_layers}
+        benchmark_circuit(hyperparams)
+
 
 class GradientComputation:
     """Time the computation of a gradient using different widths and depths."""
@@ -56,6 +62,24 @@ class GradientComputation:
                        'interface': 'torch'}
         benchmark_gradient(hyperparams)
 
+    def peakmem_gradient_autograd(self, n_wires, n_layers):
+        hyperparams = {'n_wires': n_wires,
+                       'n_layers': n_layers,
+                       'interface': 'autograd'}
+        benchmark_gradient(hyperparams)
+
+    def peakmem_gradient_tf(self, n_wires, n_layers):
+        hyperparams = {'n_wires': n_wires,
+                       'n_layers': n_layers,
+                       'interface': 'tf'}
+        benchmark_gradient(hyperparams)
+
+    def peakmem_gradient_torch(self, n_wires, n_layers):
+        hyperparams = {'n_wires': n_wires,
+                       'n_layers': n_layers,
+                       'interface': 'torch'}
+        benchmark_gradient(hyperparams)
+
 
 class Optimization:
     """Benchmark the optimization of a circuit."""
@@ -71,6 +95,21 @@ class Optimization:
         benchmark_optimization(hyperparams, n_steps=10)
 
     def time_optimization_torch(self):
+        """Time gradient descent on the default circuit using torch."""
+        hyperparams = {'interface': 'torch'}
+        benchmark_optimization(hyperparams, n_steps=10)
+
+    def peakmem_optimization_autograd(self):
+        """Time gradient descent on the default circuit using autograd."""
+        hyperparams = {'interface': 'autograd'}
+        benchmark_optimization(hyperparams, n_steps=10)
+
+    def peakmem_optimization_tf(self):
+        """Time gradient descent on the default circuit using tf."""
+        hyperparams = {'interface': 'tf'}
+        benchmark_optimization(hyperparams, n_steps=10)
+
+    def peakmem_optimization_torch(self):
         """Time gradient descent on the default circuit using torch."""
         hyperparams = {'interface': 'torch'}
         benchmark_optimization(hyperparams, n_steps=10)
