@@ -19,7 +19,7 @@ from ..benchmark_functions.gradient import benchmark_gradient
 from ..benchmark_functions.optimization import benchmark_optimization
 
 
-class CircuitEvaluation:
+class CircuitEvaluation_small:
     """Benchmark the evaluation of a circuit using different widths and depths."""
 
     params = ([2, 5, 10], [3, 6, 9])
@@ -32,45 +32,26 @@ class CircuitEvaluation:
         benchmark_circuit(hyperparams)
 
 
-class GradientComputation:
+class GradientComputation_small:
     """Time the computation of a gradient using different widths and depths."""
 
-    params = ([2, 5], [3, 6])
-    param_names = ['n_wires', 'n_layers']
+    params = ([2, 5], [3, 6], ['autograd', 'tf', 'torch'])
+    param_names = ['n_wires', 'n_layers','interface']
 
-    def time_gradient_autograd(self, n_wires, n_layers):
+    def time_gradient(self, n_wires, n_layers, interface):
         hyperparams = {'n_wires': n_wires,
                        'n_layers': n_layers,
-                       'interface': 'autograd'}
-        benchmark_gradient(hyperparams)
-
-    def time_gradient_tf(self, n_wires, n_layers):
-        hyperparams = {'n_wires': n_wires,
-                       'n_layers': n_layers,
-                       'interface': 'tf'}
-        benchmark_gradient(hyperparams)
-
-    def time_gradient_torch(self, n_wires, n_layers):
-        hyperparams = {'n_wires': n_wires,
-                       'n_layers': n_layers,
-                       'interface': 'torch'}
+                       'interface': interface}
         benchmark_gradient(hyperparams)
 
 
-class Optimization:
+class Optimization_small:
     """Benchmark the optimization of a circuit."""
 
-    def time_optimization_autograd(self):
-        """Time gradient descent on the default circuit using autograd."""
-        hyperparams = {'interface': 'autograd'}
-        benchmark_optimization(hyperparams, n_steps=10)
+    params = (['autograd','tf','torch'])
+    param_names = ['interface']
 
-    def time_optimization_tf(self):
-        """Time gradient descent on the default circuit using tf."""
-        hyperparams = {'interface': 'tf'}
-        benchmark_optimization(hyperparams, n_steps=10)
-
-    def time_optimization_torch(self):
-        """Time gradient descent on the default circuit using torch."""
-        hyperparams = {'interface': 'torch'}
+    def time_optimization(self, interface):
+        """Time gradient descent on the default circuit using an interface."""
+        hyperparams = {'interface': interface}
         benchmark_optimization(hyperparams, n_steps=10)

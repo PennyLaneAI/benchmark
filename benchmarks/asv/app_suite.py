@@ -26,7 +26,7 @@ from ..benchmark_functions.qaoa import benchmark_qaoa
 import networkx as nx
 
 
-class VQE_light:
+class VQE_small:
     """Benchmark the VQE algorithm using different number of optimization steps and grouping
      options."""
 
@@ -98,7 +98,7 @@ class VQE_heavy:
         benchmark_vqe(hyperparams)
 
 
-class QAOA_light:
+class QAOA_small:
     """Benchmark the QAOA algorithm for finding the minimum vertex cover of a small graph using
     different number of layers."""
 
