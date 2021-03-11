@@ -150,8 +150,8 @@ def _ml_defaults(hyperparams):
 		device = qml.device(device, wires=n_features)
 
 	# data
-	x0 = np.random.normal(loc=-1, scale=1, size=(n_features, n_samples // 2, 2))
-	x1 = np.random.normal(loc=1, scale=1, size=(n_features, n_samples // 2, 2))
+	x0 = np.random.normal(loc=-1, scale=1, size=(n_samples // 2, n_features))
+	x1 = np.random.normal(loc=1, scale=1, size=(n_samples // 2, n_features))
 	x = np.concatenate([x0, x1], axis=0)
 	y = np.concatenate([-np.ones(50), np.ones(50)], axis=0)
 	data = list(zip(x, y))

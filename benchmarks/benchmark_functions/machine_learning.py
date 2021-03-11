@@ -43,7 +43,7 @@ def _machine_learning_autograd(quantum_model, data):
 	gradient_fn_wq = qml.grad(average_loss, argnum=0)
 	gradient_fn_wc = qml.grad(average_loss, argnum=1)
 
-	for _ in range(50):
+	for _ in range(20):
 		w_quantum = w_quantum - 0.05 * gradient_fn_wq(w_quantum, w_classical)
 		w_classical = w_classical - 0.05 * gradient_fn_wc(w_quantum, w_classical)
 
@@ -52,6 +52,7 @@ def _machine_learning_tf(quantum_model, data):
 	"""ML example with tensorflow interface."""
 
 	import tensorflow as tf
+
 	data = [[tf.constant(x, dtype=tf.double), tf.constant(y, dtype=tf.double)] for x, y in data]
 
 	def hybrid_model(x, w_quantum, w_classical):
@@ -70,7 +71,7 @@ def _machine_learning_tf(quantum_model, data):
 	w_quantum = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
 	w_classical = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
 
-	for _ in range(50):
+	for _ in range(20):
 
 		with tf.GradientTape() as tape:
 			loss = average_loss(w_quantum, w_classical)
@@ -84,6 +85,7 @@ def _machine_learning_torch(quantum_model, data):
 	"""ML example with torch interface."""
 
 	import torch
+
 	data = [[torch.tensor(x, dtype=torch.double), torch.tensor(y, dtype=torch.double)] for x, y in data]
 
 	def hybrid_model(x, w_quantum, w_classical):
@@ -102,7 +104,7 @@ def _machine_learning_torch(quantum_model, data):
 	w_quantum = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
 	w_classical = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
 
-	for _ in range(50):
+	for _ in range(20):
 		loss = average_loss(w_quantum, w_classical)
 		loss.backward()
 
@@ -118,7 +120,7 @@ def benchmark_machine_learning(hyperparams={}, num_repeats=1):
 	The data is generated from Gaussian blobs. The model first multiplies the input vectors with
 	a weight matrix, and then feeds it into a quantum model that uses AngleEmbedding for the encoding
 	and BasicEntanglingLayers as the trainable circuit. The number of qubits and layers correspond to the
-	number of features. Training uses gradient descent with 50 steps.
+	number of features. Training uses gradient descent with 20 steps.
 
 	Args:
 	hyperparams (dict): hyperparameters to configure this benchmark
