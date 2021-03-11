@@ -102,7 +102,7 @@ def _machine_learning_torch(quantum_model, data):
 	w_quantum = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
 	w_classical = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
 
-	for i in range(50):
+	for _ in range(50):
 		loss = average_loss(w_quantum, w_classical)
 		loss.backward()
 
