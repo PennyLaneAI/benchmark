@@ -18,7 +18,7 @@ Check out the current results at [https://pennylaneai.github.io/benchmark/](http
 
 `benchmarks/benchmark_functions`: folder holding the basic benchmark functions which can be used independently of ASV.
 
-`customenv_build.sh`: clones plugin source code into `.asv/sources`, creates a conda environment in `.asv/env/customenv`, populates the custom environment with necessary packages
+`customenv_build.sh`: clones plugin source code into `.asv/sources`, creates a conda environment in `.asv/env/customenv`, populates the custom environment with necessary packages.
 
 `update_sources.sh`: runs `git pull` on the plugins within `.asv/sources`
 
