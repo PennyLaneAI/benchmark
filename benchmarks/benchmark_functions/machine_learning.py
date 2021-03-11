@@ -70,7 +70,7 @@ def _machine_learning_tf(quantum_model, data):
 	w_quantum = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
 	w_classical = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
 
-	for i in range(50):
+	for _ in range(50):
 
 		with tf.GradientTape() as tape:
 			loss = average_loss(w_quantum, w_classical)
