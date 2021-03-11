@@ -45,7 +45,10 @@ def _core_defaults(hyperparams):
 
 	# if device name is given, create device
 	if isinstance(device, str):
-		device = qml.device(device, wires=n_wires)
+		if device == 'cirq.pasqal':
+			device = qml.device(device, wires=n_wires, control_radius=1.5)
+		else:
+			device = qml.device(device, wires=n_wires)
 
 	# wrap default template so it only takes the parameters as argument
 	if template is None:
@@ -101,7 +104,10 @@ def _vqe_defaults(hyperparams):
 	options_dict = {'interface': interface, 'diff_method': diff_method, 'optimize': optimize}
 
 	if isinstance(device, str):
-		device = qml.device(device, wires=qubits)
+		if device == 'cirq.pasqal':
+			device = qml.device(device, wires=n_wires, control_radius=1.5)
+		else:
+			device = qml.device(device, wires=n_wires)
 
 	return ham, ansatz, params, n_steps, device, options_dict
 
