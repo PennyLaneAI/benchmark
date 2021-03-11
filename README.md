@@ -18,6 +18,10 @@ Check out the current results at [https://pennylaneai.github.io/benchmark/](http
 
 `benchmarks/benchmark_functions`: folder holding the basic benchmark functions which can be used independently of ASV.
 
+`customenv_build.sh`: clones plugin source code into `.asv/sources`, creates a conda environment in `.asv/env/customenv`, populates the custom environment with necessary packages
+
+`update_sources.sh`: runs `git pull` on the plugins within `.asv/sources`
+
 ## Using benchmark functions without ASV
 
 Here is an advanced example of how the benchmark functions can be customised and used in combination with 
@@ -68,6 +72,10 @@ ASV can be installed via
 To benchmark all suites for a single commit:
 
 `asv run <commit>^..<commit>`
+
+To run asv with the custom environment:
+
+`asv run -E'existing:.asv/env/customenv/bin/python'`
   
 To benchmark all suites for a commit range (see git revisions for more details):
 
