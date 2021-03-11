@@ -43,7 +43,7 @@ def _machine_learning_autograd(quantum_model, data):
 	gradient_fn_wq = qml.grad(average_loss, argnum=0)
 	gradient_fn_wc = qml.grad(average_loss, argnum=1)
 
-	for i in range(50):
+	for _ in range(50):
 		w_quantum = w_quantum - 0.05 * gradient_fn_wq(w_quantum, w_classical)
 		w_classical = w_classical - 0.05 * gradient_fn_wc(w_quantum, w_classical)
 
