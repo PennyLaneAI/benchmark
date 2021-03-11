@@ -6,3 +6,4 @@ cd ../pennylane-cirq
 git pull
 cd ../pennylane-qulacs
 git pull
+cd ../../..
