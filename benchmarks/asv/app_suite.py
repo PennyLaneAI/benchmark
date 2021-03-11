@@ -141,68 +141,45 @@ class QAOA_heavy:
 class ML_light:
     """Benchmark a hybrid quantum-classical machine learning application with a small dataset."""
 
+    params = (['autograd', 'torch', 'tf'])
+    param_names = ['interface']
     n_features = 4
     n_samples = 20
 
-    def time_ml_autograd_light(self):
-        """Time 50 training steps of a hybrid quantum machine learning example in the autograd interface."""
+    def time_ml_light(self, interface):
+        """Time 50 training steps of a hybrid quantum machine learning example."""
         hyperparams = {'n_layers': self.n_features,
                        'n_samples': self.n_samples,
-                       'interface': 'autograd'}
+                       'interface': interface}
         benchmark_machine_learning(hyperparams)
 
-    def time_ml_torch_light(self):
-        """Time 50 training steps of a hybrid quantum machine learning example in the torch interface."""
-        hyperparams = {'n_layers': self.n_features,
-                       'n_samples': self.n_samples,
-                       'interface': 'torch'}
-        benchmark_machine_learning(hyperparams)
-
-    def time_ml_tf_light(self):
-        """Time 50 training steps of a hybrid quantum machine learning example in the tensorflow interface."""
-        hyperparams = {'n_layers': self.n_features,
-                       'n_samples': self.n_samples,
-                       'interface': 'tf'}
-        benchmark_machine_learning(hyperparams)
-
-    def peakmem_ml_autograd_light(self):
+    def peakmem_ml_light(self, interface):
         """Benchmark peak memory of 50 training steps of a hybrid quantum machine learning example
-        in the autograd interface."""
+        ."""
         hyperparams = {'n_layers': self.n_features,
-                       'n_samples': self.n_samples}
+                       'n_samples': self.n_samples,
+                       'interface': interface}
         benchmark_machine_learning(hyperparams)
 
 
 class ML_heavy:
     """Benchmark a hybrid quantum-classical machine learning application with a large dataset."""
 
+    params = (['autograd', 'torch', 'tf'])
+    param_names = ['interface']
     n_features = 10
     n_samples = 100
 
-    def time_ml_autograd_heavy(self):
-        """Time 50 training steps of a hybrid quantum machine learning example in the autograd interface."""
+    def time_ml_heavy(self, interface):
+        """Time 50 training steps of a hybrid quantum machine learning example."""
         hyperparams = {'n_layers': self.n_features,
                        'n_samples': self.n_samples,
-                       'interface': 'autograd'}
+                       'interface': interface}
         benchmark_machine_learning(hyperparams)
 
-    def time_ml_torch_heavy(self):
-        """Time 50 training steps of a hybrid quantum machine learning example in the torch interface."""
+    def peakmem_ml_training_heavy(self, interface):
+        """Benchmark peak memory of 50 training steps of a hybrid quantum machine learning example."""
         hyperparams = {'n_layers': self.n_features,
                        'n_samples': self.n_samples,
-                       'interface': 'torch'}
-        benchmark_machine_learning(hyperparams)
-
-    def time_ml_tf_heavy(self):
-        """Time 50 training steps of a hybrid quantum machine learning example in the tensorflow interface."""
-        hyperparams = {'n_layers': self.n_features,
-                       'n_samples': self.n_samples,
-                       'interface': 'tf'}
-        benchmark_machine_learning(hyperparams)
-
-    def peakmem_ml_training_heavy(self):
-        """Benchmark peak memory of 50 training steps of a hybrid quantum machine learning example
-        in the autograd interface."""
-        hyperparams = {'n_layers': self.n_features,
-                       'n_samples': self.n_samples}
+                       'interface': interface}
         benchmark_machine_learning(hyperparams)
