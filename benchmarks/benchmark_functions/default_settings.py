@@ -139,7 +139,7 @@ def _ml_defaults(hyperparams):
 		hyperparams (dict): hyperparameters provided by user
 	"""
 	# get hyperparameters or set default values
-	n_features = hyperparams.pop('n_wires', 4)
+	n_features = hyperparams.pop('n_features', 4)
 	n_samples = hyperparams.pop('n_samples', 20)
 	interface = hyperparams.pop('interface', 'autograd')
 	diff_method = hyperparams.pop('diff_method', 'best')
