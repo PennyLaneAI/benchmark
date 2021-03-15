@@ -27,7 +27,7 @@ from pennylane.templates.decorator import template as template_decorator
 from pennylane.templates.subroutines import UCCSD
 from pennylane import Identity, PauliX, PauliY, PauliZ
 
-from .hamiltonians import ham_H
+from .hamiltonians import ham_h2
 
 
 def _core_defaults(hyperparams):

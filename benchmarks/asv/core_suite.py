@@ -19,7 +19,7 @@ from ..benchmark_functions.gradient import benchmark_gradient
 from ..benchmark_functions.optimization import benchmark_optimization
 
 
-class CircuitEvaluation_small:
+class CircuitEvaluation_light:
     """Benchmark the evaluation of a circuit using different widths and depths."""
 
     params = ([2, 5, 10], [3, 6, 9])
@@ -32,7 +32,7 @@ class CircuitEvaluation_small:
         benchmark_circuit(hyperparams)
 
 
-class GradientComputation_small:
+class GradientComputation_light:
     """Time the computation of a gradient using different widths and depths."""
 
     params = ([2, 5], [3, 6], ['autograd', 'tf', 'torch'])
@@ -45,7 +45,7 @@ class GradientComputation_small:
         benchmark_gradient(hyperparams)
 
 
-class Optimization_small:
+class Optimization_light:
     """Benchmark the optimization of a circuit."""
 
     params = (['autograd','tf','torch'])
