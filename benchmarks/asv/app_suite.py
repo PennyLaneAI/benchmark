@@ -177,7 +177,7 @@ class ML_heavy:
                        'interface': interface}
         benchmark_machine_learning(hyperparams)
 
-    def peakmem_ml_training_heavy(self, interface):
+    def peakmem_ml_heavy(self, interface):
         """Benchmark peak memory of 50 training steps of a hybrid quantum machine learning example."""
         hyperparams = {'n_layers': self.n_features,
                        'n_samples': self.n_samples,
