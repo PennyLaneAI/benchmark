@@ -1,10 +1,13 @@
 cd ~/benchmark
 
 BRANCHNAME=$(date +results%y%m%d)
-git checkout master
+git checkout main
+git pull
 git checkout -b $BRANCHNAME
 
-asv run NEW --interleave-processes --parallel --config full_dependencies.conf.json --machine aws-c5.large
+./update_sources.sh
+
+asv run NEW -E'existing:.asv/env/customenv/bin/python' --interleave-processes --parallel --machine aws-c5.large --bench small
 
 git add --force .asv/results
 git commit -m "automatic submission of aws results"
