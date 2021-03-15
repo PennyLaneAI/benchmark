@@ -78,7 +78,7 @@ def _vqe_defaults(hyperparams):
 	ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
 	params = np.array([3.14545258, 3.13766988, -0.21446816])
 
-	ham = hyperparams.pop('Hamiltonian', ham_H)
+	ham = hyperparams.pop('Hamiltonian', ham_h2)
 	ansatz = hyperparams.pop('ansatz', ansatz)
 	params = hyperparams.pop('params', params)
 	n_steps = hyperparams.pop('n_steps', 1)

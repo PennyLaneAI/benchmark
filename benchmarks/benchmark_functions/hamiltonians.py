@@ -18,11 +18,11 @@ from pennylane import Identity, PauliX, PauliY, PauliZ
 
 ############ H molecule #################################################
 
-H_coeffs = np.array([-0.05963862, 0.17575739, 0.17575739, -0.23666489, -0.23666489,
+h2_coeffs = np.array([-0.05963862, 0.17575739, 0.17575739, -0.23666489, -0.23666489,
                         0.17001485, 0.04491735, -0.04491735, -0.04491735, 0.04491735,
                         0.12222641, 0.16714376, 0.16714376, 0.12222641, 0.17570278])
 
-H_ops = [Identity(wires=[0]), PauliZ(wires=[0]), PauliZ(wires=[1]), PauliZ(wires=[2]),
+h2_ops = [Identity(wires=[0]), PauliZ(wires=[0]), PauliZ(wires=[1]), PauliZ(wires=[2]),
             PauliZ(wires=[3]), PauliZ(wires=[0]) @ PauliZ(wires=[1]),
             PauliY(wires=[0]) @ PauliX(wires=[1]) @ PauliX(wires=[2]) @ PauliY(wires=[3]),
             PauliY(wires=[0]) @ PauliY(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[3]),
@@ -32,7 +32,7 @@ H_ops = [Identity(wires=[0]), PauliZ(wires=[0]), PauliZ(wires=[1]), PauliZ(wires
             PauliZ(wires=[1]) @ PauliZ(wires=[2]), PauliZ(wires=[1]) @ PauliZ(wires=[3]),
             PauliZ(wires=[2]) @ PauliZ(wires=[3])]
 
-ham_H = qml.Hamiltonian(H_coeffs, H_ops)
+ham_h2 = qml.Hamiltonian(h2_coeffs, h2_ops)
 
 ############# LiH #############################################################
 
