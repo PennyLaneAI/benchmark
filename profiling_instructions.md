@@ -13,3 +13,9 @@ The next variable, `a2fa39c` is the hash of the commit to run the profile on.  M
 The `--output` flag designates the file where the profiling data gets saved to.
 
 Once you have the data saved, you can view it in a program like [snakeviz](https://jiffyclub.github.io/snakeviz/).
+
+`
+python -m asv profile 'asv.app_suite.VQE_heavy.time_lih\(True\)' -E'existing:.asv/env/customenv/bin/python' --output profiles/VQE_heavy.prof 
+
+python -m asv profile 'asv.app_suite.QAOA_heavy.time_minvertex_heavy' -E'existing:.asv/env/customenv/bin/python' --output profiles/QAOA_heavy.prof 
+`
