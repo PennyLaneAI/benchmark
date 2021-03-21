@@ -6,7 +6,7 @@
     "version": 1,
 
     // The name of the project being benchmarked
-    "project": "PennyLane",
+    "project": "pennylane",
 
     // The project's homepage
     "project_url": "pennylane.ai",
@@ -49,10 +49,16 @@
     // followed by the pip installed packages).
     //
     "matrix": {
-        "pennylane": [],
         "tensorflow": [],
         "torch": [],
+        "networkx": [],
+        "Qulacs": [],
+        "qsimcirq": [],
     },
+
+    // timeout in seconds for installing any dependencies in environment
+    // defaults to 10 min
+    "install_timeout": 6000,
 
     // -------------------------------------------------------------------
     // VALUES WE DON'T USE
