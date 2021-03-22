@@ -30,6 +30,7 @@ from pennylane import Identity, PauliX, PauliY, PauliZ
 from .hamiltonians import ham_h2
 
 
+
 def _core_defaults(hyperparams):
 	"""Uses hyperparameters or defaults to construct the components of the circuit.
 
@@ -118,3 +119,30 @@ def _qaoa_defaults(hyperparams):
 	options_dict = {'interface': interface, 'diff_method': diff_method}
 
 	return graph, n_layers, params, device, options_dict
+
+
+def _ml_defaults(hyperparams):
+	"""Uses hyperparameters or defaults to construct the components of the machine learning benchmark.
+
+	Args:
+		hyperparams (dict): hyperparameters provided by user
+	"""
+	# get hyperparameters or set default values
+	n_features = hyperparams.pop('n_features', 4)
+	n_samples = hyperparams.pop('n_samples', 20)
+	interface = hyperparams.pop('interface', 'autograd')
+	diff_method = hyperparams.pop('diff_method', 'best')
+	device = hyperparams.pop('device', 'default.qubit')
+
+	# if device name is given, create device
+	if isinstance(device, str):
+		device = qml.device(device, wires=n_features)
+
+	# data
+	x0 = np.random.normal(loc=-1, scale=1, size=(n_samples // 2, n_features))
+	x1 = np.random.normal(loc=1, scale=1, size=(n_samples // 2, n_features))
+	x = np.concatenate([x0, x1], axis=0)
+	y = np.concatenate([-np.ones(50), np.ones(50)], axis=0)
+	data = list(zip(x, y))
+
+	return data, device, diff_method, interface

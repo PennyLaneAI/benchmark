@@ -15,10 +15,9 @@
 Benchmarks for simple circuit evaluations.
 """
 import pennylane as qml
-import tensorflow as tf
-import torch
 from pennylane import numpy as pnp
 from .default_settings import _core_defaults
+
 
 def benchmark_gradient(hyperparams={}, num_repeats=1):
 	"""Computes the gradient of a quantum circuit.
@@ -65,12 +64,14 @@ def benchmark_gradient(hyperparams={}, num_repeats=1):
 			jac(params)
 
 		elif interface == 'tf':
+			import tensorflow as tf
 			params = tf.Variable(params)
 			with tf.GradientTape() as tape:
 				result = circuit(params)
 			tape.gradient(result, [params])
 
 		elif interface == 'torch':
+			import torch
 			params = torch.tensor(params, requires_grad=True)
 			result = circuit(params)
 			result.backward()

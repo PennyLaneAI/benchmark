@@ -23,6 +23,8 @@ from pennylane import qchem
 from ..benchmark_functions.vqe import benchmark_vqe
 from ..benchmark_functions.hamiltonians import ham_lih
 from ..benchmark_functions.qaoa import benchmark_qaoa
+from ..benchmark_functions.machine_learning import benchmark_machine_learning
+
 import networkx as nx
 
 
@@ -134,3 +136,50 @@ class QAOA_heavy:
         hyperparams = {'n_layers': self.n_layers,
                        'graph': self.graph}
         benchmark_qaoa(hyperparams)
+
+
+class ML_light:
+    """Benchmark a hybrid quantum-classical machine learning application with a small dataset."""
+
+    params = (['autograd', 'torch', 'tf'])
+    param_names = ['interface']
+    n_features = 4
+    n_samples = 20
+
+    def time_ml_light(self, interface):
+        """Time 50 training steps of a hybrid quantum machine learning example."""
+        hyperparams = {'n_layers': self.n_features,
+                       'n_samples': self.n_samples,
+                       'interface': interface}
+        benchmark_machine_learning(hyperparams)
+
+    def peakmem_ml_light(self, interface):
+        """Benchmark peak memory of 50 training steps of a hybrid quantum machine learning example
+        ."""
+        hyperparams = {'n_layers': self.n_features,
+                       'n_samples': self.n_samples,
+                       'interface': interface}
+        benchmark_machine_learning(hyperparams)
+
+
+class ML_heavy:
+    """Benchmark a hybrid quantum-classical machine learning application with a large dataset."""
+
+    params = (['autograd', 'torch', 'tf'])
+    param_names = ['interface']
+    n_features = 10
+    n_samples = 100
+
+    def time_ml_heavy(self, interface):
+        """Time 50 training steps of a hybrid quantum machine learning example."""
+        hyperparams = {'n_layers': self.n_features,
+                       'n_samples': self.n_samples,
+                       'interface': interface}
+        benchmark_machine_learning(hyperparams)
+
+    def peakmem_ml_heavy(self, interface):
+        """Benchmark peak memory of 50 training steps of a hybrid quantum machine learning example."""
+        hyperparams = {'n_layers': self.n_features,
+                       'n_samples': self.n_samples,
+                       'interface': interface}
+        benchmark_machine_learning(hyperparams)
