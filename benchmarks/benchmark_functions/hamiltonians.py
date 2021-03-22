@@ -16,6 +16,26 @@ import pennylane as qml
 from pennylane import numpy as np
 from pennylane import Identity, PauliX, PauliY, PauliZ
 
+############ H molecule #################################################
+
+h2_coeffs = np.array([-0.05963862, 0.17575739, 0.17575739, -0.23666489, -0.23666489,
+                        0.17001485, 0.04491735, -0.04491735, -0.04491735, 0.04491735,
+                        0.12222641, 0.16714376, 0.16714376, 0.12222641, 0.17570278])
+
+h2_ops = [Identity(wires=[0]), PauliZ(wires=[0]), PauliZ(wires=[1]), PauliZ(wires=[2]),
+            PauliZ(wires=[3]), PauliZ(wires=[0]) @ PauliZ(wires=[1]),
+            PauliY(wires=[0]) @ PauliX(wires=[1]) @ PauliX(wires=[2]) @ PauliY(wires=[3]),
+            PauliY(wires=[0]) @ PauliY(wires=[1]) @ PauliX(wires=[2]) @ PauliX(wires=[3]),
+            PauliX(wires=[0]) @ PauliX(wires=[1]) @ PauliY(wires=[2]) @ PauliY(wires=[3]),
+            PauliX(wires=[0]) @ PauliY(wires=[1]) @ PauliY(wires=[2]) @ PauliX(wires=[3]),
+            PauliZ(wires=[0]) @ PauliZ(wires=[2]), PauliZ(wires=[0]) @ PauliZ(wires=[3]),
+            PauliZ(wires=[1]) @ PauliZ(wires=[2]), PauliZ(wires=[1]) @ PauliZ(wires=[3]),
+            PauliZ(wires=[2]) @ PauliZ(wires=[3])]
+
+ham_h2 = qml.Hamiltonian(h2_coeffs, h2_ops)
+
+############# LiH #############################################################
+
 lih_coeffs = np.array([-6.74845266e+00, -1.02553930e-01, 1.00530907e-02, 1.00530907e-02,
                      -1.02553930e-01, 1.00530907e-02, 1.00530907e-02, -2.76355319e-01,
                      -2.76355319e-01, -2.96925596e-01, -2.96925596e-01, -2.96925596e-01,

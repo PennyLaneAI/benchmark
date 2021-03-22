@@ -48,5 +48,5 @@ def benchmark_vqe(hyperparams={}):
 
 	opt = qml.GradientDescentOptimizer(stepsize=0.4)
 
-	for n in range(n_steps):
+	for _ in range(n_steps):
 		params, energy = opt.step_and_cost(cost_fn, params)

@@ -6,7 +6,7 @@
     "version": 1,
 
     // The name of the project being benchmarked
-    "project": "PennyLane",
+    "project": "pennylane",
 
     // The project's homepage
     "project_url": "pennylane.ai",
