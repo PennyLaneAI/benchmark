@@ -7,7 +7,7 @@ git checkout -b $BRANCHNAME
 
 ./update_sources.sh
 
-asv run -E'existing:.asv/env/customenv/bin/python' --machine aws-c5.large
+asv run --machine aws-c5.large
 
 git add --force .asv/results
 git commit -m "automatic submission of aws results"

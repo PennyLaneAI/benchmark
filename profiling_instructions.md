@@ -17,5 +17,5 @@ Once you have the data saved, you can view it in a program like [snakeviz](https
 `
 python -m asv profile 'asv.app_suite.VQE_heavy.time_lih\(True\)' -E'existing:.asv/env/customenv/bin/python' --output profiles/VQE_heavy.prof 
 
-python -m asv profile 'asv.app_suite.QAOA_heavy.time_minvertex_heavy' -E'existing:.asv/env/customenv/bin/python' --output profiles/QAOA_heavy.prof 
+python -m asv profile 'asv.app_suite.QAOA_heavy.time_minvertex_heavy' -E'existing:.asv/env/customenv/bin/python' --output profiles/QAOAgit st_heavy.prof 
 `
