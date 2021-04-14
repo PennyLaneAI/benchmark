@@ -58,6 +58,10 @@ class VQE_heavy:
     params = ([False, True])
     param_names = ['optimize']
 
+    timeout = 600 # 10 minutes
+    repeat = (1, 1, 600) # Only collect one sample
+    number = 1 # one iteration in each sample
+
     def setup(self, optimize):
 
         electrons = 2
@@ -123,6 +127,9 @@ class QAOA_heavy:
 
     n_layers = 5
     graph = nx.complete_graph(20)
+    timeout = 600 # 10 minutes
+    repeat = (1, 1, 600) # Only collect one sample
+    number = 1 # one iteration in each sample
 
     def time_minvertex_heavy(self):
         """Time a QAOA algorithm for finding the minimum vertex cover of a large graph."""
@@ -169,6 +176,10 @@ class ML_heavy:
     param_names = ['interface']
     n_features = 10
     n_samples = 100
+
+    timeout = 600 # 10 minutes
+    repeat = (1, 1, 600) # Only collect one sample
+    number = 1 # one iteration in each sample
 
     def time_ml_heavy(self, interface):
         """Time 50 training steps of a hybrid quantum machine learning example."""
