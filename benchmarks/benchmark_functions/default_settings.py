@@ -18,7 +18,6 @@ import networkx as nx
 
 import pennylane as qml
 from pennylane import numpy as np
-from pennylane import qchem
 
 from numpy.random import random
 from functools import partial
@@ -76,9 +75,14 @@ def _vqe_defaults(hyperparams):
 	electrons = 2
 	qubits = 4
 
-	singles, doubles = qchem.excitations(electrons, qubits)
-	s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
-	hf_state = qchem.hf_state(electrons, qubits)
+	singles = [[0, 2], [1,3]]
+	doubles = [[0, 1, 2, 3]]
+
+	s_wires = [[0, 1, 2], [1, 2, 3]]
+	d_wires = [[[0, 1], [2, 3]]]
+
+	hf_state = np.arrray([1, 1, 0, 0])
+
 	ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
 	params = np.array([3.14545258, 3.13766988, -0.21446816])
 
