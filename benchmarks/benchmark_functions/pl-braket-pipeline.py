@@ -36,10 +36,10 @@ def benchmark_casual(dev_name, s3=None):
         device = qml.device("braket.local.qubit", wires=n_wires, shots=None)
     elif dev_name == "sv1":
         device = qml.device("braket.aws.qubit",
-            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
-            s3_destination_folder=s3,
-            wires=n_wires,
-            shots=None)
+                            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
+                            s3_destination_folder=s3,
+                            wires=n_wires,
+                            shots=None)
     elif dev_name == "tn1":
         shots = 1000
         device = qml.device("braket.aws.qubit",
@@ -50,10 +50,10 @@ def benchmark_casual(dev_name, s3=None):
     elif dev_name == "ionq":
         shots = 100
         device = qml.device("braket.aws.qubit",
-                    device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
-                    s3_destination_folder=s3,
-                    wires=n_wires,
-                    shots=shots)
+                            device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
+                            s3_destination_folder=s3,
+                            wires=n_wires,
+                            shots=shots)
     else:
         raise ValueError("dev_name not 'local', 'sv1', 'ionq', or 'tn1'")
 
@@ -83,10 +83,10 @@ def benchmark_power(dev_name, s3=None):
     elif dev_name == "sv1":
         n_wires = 20
         device = qml.device("braket.aws.qubit",
-            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
-            s3_destination_folder=s3,
-            wires=n_wires,
-            shots=None)
+                            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
+                            s3_destination_folder=s3,
+                            wires=n_wires,
+                            shots=None)
     elif dev_name == "tn1":
         shots=1000
         n_wires = 20
@@ -99,10 +99,10 @@ def benchmark_power(dev_name, s3=None):
         shots = 100
         n_wires = 11
         device = qml.device("braket.aws.qubit",
-                    device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
-                    s3_destination_folder=s3,
-                    wires=n_wires,
-                    shots=shots)
+                            device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
+                            s3_destination_folder=s3,
+                            wires=n_wires,
+                            shots=shots)
     else:
         raise ValueError("dev_name not 'local', 'sv1','tn1', or 'ionq'")
 
