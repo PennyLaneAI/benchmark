@@ -77,7 +77,11 @@ def benchmark_power(dev_name, s3=None)
         s3 (tuple):  A tuple of (bucket, prefix) to specify the s3 storage location
     """
     n_layers = 5
-	graph = nx.complete_graph(20)
+    if dev_name == "ionq":
+        graph = nx.complete_graph(11)
+    else:
+    	graph = nx.complete_graph(20)
+        
 	params = [[0.5] * n_layers, [0.5] * n_layers]
 	interface = 'autograd'
 	diff_method = 'best'
