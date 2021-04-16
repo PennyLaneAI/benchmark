@@ -18,196 +18,102 @@ import networkx as nx
 from pennylane import numpy as pnp
 from pennylane import qaoa
 
+def benchmark_casual(dev_name, s3=None):
+    """ A simple optimization workflow
 
-def benchmark_casual_sv1(bucket, prefix):
-	"""Trains a small quantum circuit for 20 steps using the remote Braket SV1 simulator.
-	The entire training is repeated 5 times.
-	"""
-	num_repeats = 5
-	n_steps = 20
-	n_wires = 4
-	n_layers = 6
-	interface = 'autograd'
-	params = random(size=(n_layers, n_wires))
-	diff_method = 'best'
-	s3 = (bucket, prefix)
-	device = qml.device("braket.aws.qubit",
-						device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
-						s3_destination_folder=s3,
-						wires=n_wires,
-						shots=None)
+    Args:
+        dev_name (str): Either "local", "sv1", "tn1", or "ionq"
+        s3 (tuple):  A tuple of (bucket, prefix) to specify the s3 storage location
 
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
+    """
+    n_steps = 2
+    n_wires = 4
+    n_layers = 6
+    interface = 'autograd'
+    diff_method = 'best'
+
+    if dev_name == "local":
+        device = qml.device("braket.local.qubit", wires=n_wires, shots=None)
+    elif dev_name == "sv1":
+        device = qml.device("braket.aws.qubit",
+            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
+            s3_destination_folder=s3,
+            wires=n_wires,
+            shots=None)
+    elif dev_name == "tn1":
+        shots = 1000
+        device = qml.device("braket.aws.qubit",
+                            device_arn='arn:aws:braket:::device/quantum-simulator/amazon/tn1',
+                            s3_destination_folder=s3,
+                            wires=n_wires,
+                            shots=shots)
+    elif dev_name == "ionq":
+        shots = 100
+        device = qml.device("braket.aws.qubit",
+                    device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
+                    s3_destination_folder=s3,
+                    wires=n_wires,
+                    shots=shots)
+    else:
+        raise ValueError("dev_name not 'local', 'sv1', 'ionq', or 'tn1'")
+
+    @qml.qnode(device, interface=interface, diff_method=diff_method)
 	def circuit(params_):
 		qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
 		return qml.expval(qml.PauliZ(0))
 
-	for _ in range(num_repeats):
+    opt = qml.GradientDescentOptimizer(stepsize=0.1)
 
-		params = pnp.array(params, requires_grad=True)
-		opt = qml.GradientDescentOptimizer(stepsize=0.1)
+    print("starting optimization")
+    for i in range(n_steps):
+        params = opt.step(circuit, params)
+        print("step: ", i)
+    
+def benchmark_power(dev_name, s3=None):
+    """ A substantial QAOA workflow
 
-		for i in range(n_steps):
-			params = opt.step(circuit, params)
+    Args:
+        dev_name (str): Either "local", "sv1", "tn1", or "ionq"
+        s3 (tuple):  A tuple of (bucket, prefix) to specify the s3 storage location
+    """
 
+    if dev_name == "local":
+        n_wires = 20
+        device = qml.device("braket.local.qubit", wires=n_wires, shots=None)
+    elif dev_name == "sv1":
+        n_wires = 20
+        device = qml.device("braket.aws.qubit",
+            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
+            s3_destination_folder=s3,
+            wires=n_wires,
+            shots=None)
+    elif dev_name == "tn1":
+        shots=1000
+        n_wires = 20
+        device = qml.device("braket.aws.qubit",
+                            device_arn='arn:aws:braket:::device/quantum-simulator/amazon/tn1',
+                            s3_destination_folder=s3,
+                            wires=n_wires,
+                            shots=shots)
+    elif dev_name == "ionq":
+        shots = 100
+        n_wires = 11
+        device = qml.device("braket.aws.qubit",
+                    device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
+                    s3_destination_folder=s3,
+                    wires=n_wires,
+                    shots=shots)
+    else:
+        raise ValueError("dev_name not 'local', 'sv1','tn1', or 'ionq'")
 
-def benchmark_power_sv1(bucket, prefix):
-	"""
-	Performs a QAOA optimization on 20 qubits with 5 layers on the remote Braket SV1 simulator.
-	"""
+    n_layers = 5
+    graph = nx.complete_graph(n_wires)
 
-	n_layers = 5
-	graph = nx.complete_graph(20)
-	params = [[0.5] * n_layers, [0.5] * n_layers]
-	interface = 'autograd'
-	diff_method = 'best'
-	n_wires = len(graph.nodes)
-	H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
-
-	s3 = (bucket, prefix)
-	device = qml.device("braket.aws.qubit",
-						device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
-						s3_destination_folder=s3,
-						wires=n_wires,
-						shots=None)
-
-	def qaoa_layer(gamma, alpha):
-		qaoa.cost_layer(gamma, H_cost)
-		qaoa.mixer_layer(alpha, H_mixer)
-
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
-	def circuit(params):
-		for w in range(n_wires):
-			qml.Hadamard(wires=w)
-		qml.layer(qaoa_layer, n_layers, params[0], params[1])
-		return [qml.sample(qml.PauliZ(i)) for i in range(n_wires)]
-
-	circuit(params)
-
-
-def benchmark_casual_tn1(bucket, prefix):
-	"""Trains a small quantum circuit for 20 steps using the remote Braket TN1 simulator.
-	The entire training is repeated 5 times.
-	"""
-	num_repeats = 5
-	n_steps = 20
-	n_wires = 4
-	n_layers = 6
-	interface = 'autograd'
-	params = random(size=(n_layers, n_wires))
-	diff_method = 'best'
-	shots = 1000
-
-	s3 = (bucket, prefix)
-	device = qml.device("braket.aws.qubit",
-						device_arn='arn:aws:braket:::device/quantum-simulator/amazon/tn1',
-						s3_destination_folder=s3,
-						wires=n_wires,
-						shots=shots)
-
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
-	def circuit(params_):
-		qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
-		return qml.expval(qml.PauliZ(0))
-
-	for _ in range(num_repeats):
-
-		params = pnp.array(params, requires_grad=True)
-		opt = qml.GradientDescentOptimizer(stepsize=0.1)
-
-		for i in range(n_steps):
-			params = opt.step(circuit, params)
-
-
-def benchmark_power_tn1(bucket, prefix):
-	"""
-	Performs a QAOA optimization on 20 qubits with 5 layers on the remote Braket TN1 simulator.
-	"""
-
-	n_layers = 5
-	graph = nx.complete_graph(20)
-	params = [[0.5] * n_layers, [0.5] * n_layers]
-	interface = 'autograd'
-	diff_method = 'best'
-	n_wires = len(graph.nodes)
-	H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
-	shots = 1000
-
-	s3 = (bucket, prefix)
-	device = qml.device("braket.aws.qubit",
-						device_arn='arn:aws:braket:::device/quantum-simulator/amazon/tn1',
-						s3_destination_folder=s3,
-						wires=n_wires,
-						shots=shots)
-
-	def qaoa_layer(gamma, alpha):
-		qaoa.cost_layer(gamma, H_cost)
-		qaoa.mixer_layer(alpha, H_mixer)
-
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
-	def circuit(params):
-		for w in range(n_wires):
-			qml.Hadamard(wires=w)
-		qml.layer(qaoa_layer, n_layers, params[0], params[1])
-		return [qml.sample(qml.PauliZ(i)) for i in range(n_wires)]
-
-	circuit(params)
-
-
-def benchmark_casual_ionq(bucket, prefix):
-	"""Trains a small quantum circuit for 20 steps using the remote Braket IonQ hardware.
-	The entire training is repeated 5 times.
-	"""
-	num_repeats = 5
-	n_steps = 20
-	n_wires = 4
-	n_layers = 6
-	interface = 'autograd'
-	params = random(size=(n_layers, n_wires))
-	diff_method = 'best'
-	shots = 1000
-
-	s3 = (bucket, prefix)
-	device = qml.device("braket.aws.qubit",
-						device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
-						s3_destination_folder=s3,
-						wires=n_wires,
-						shots=shots)
-
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
-	def circuit(params_):
-		qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
-		return qml.expval(qml.PauliZ(0))
-
-	for _ in range(num_repeats):
-
-		params = pnp.array(params, requires_grad=True)
-		opt = qml.GradientDescentOptimizer(stepsize=0.1)
-
-		for i in range(n_steps):
-			params = opt.step(circuit, params)
-
-
-def benchmark_power_ionq(bucket, prefix):
-	"""
-	Performs a QAOA optimization on 20 qubits with 5 layers on the remote Braket IonQ hardware.
-	"""
-
-	n_layers = 5
-	graph = nx.complete_graph(20)
-	params = [[0.5] * n_layers, [0.5] * n_layers]
-	interface = 'autograd'
-	diff_method = 'best'
-	n_wires = len(graph.nodes)
-	H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
-	shots = 1000
-
-	s3 = (bucket, prefix)
-	device = qml.device("braket.aws.qubit",
-						device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
-						s3_destination_folder=s3,
-						wires=n_wires,
-						shots=shots)
+    params = [[0.5] * n_layers, [0.5] * n_layers]
+    interface = 'autograd'
+    diff_method = 'best'
+    n_wires = len(graph.nodes)
+    H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
 
 	def qaoa_layer(gamma, alpha):
 		qaoa.cost_layer(gamma, H_cost)
