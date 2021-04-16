@@ -69,7 +69,7 @@ def benchmark_casual(dev_name, s3=None):
         params = opt.step(circuit, params)
         print("step: ", i)
     
-def benchmark_power(dev_name, s3=None)
+def benchmark_power(dev_name, s3=None):
     """ A substantial QAOA workflow
 
     Args:
@@ -81,7 +81,7 @@ def benchmark_power(dev_name, s3=None)
         graph = nx.complete_graph(11)
     else:
     	graph = nx.complete_graph(20)
-        
+
 	params = [[0.5] * n_layers, [0.5] * n_layers]
 	interface = 'autograd'
 	diff_method = 'best'
