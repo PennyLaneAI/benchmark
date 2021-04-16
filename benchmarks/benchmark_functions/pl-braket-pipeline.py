@@ -78,10 +78,10 @@ def benchmark_power(dev_name, s3=None):
     """
 
     if dev_name == "local":
-        n_wires = 20
+        n_wires = 15
         device = qml.device("braket.local.qubit", wires=n_wires, shots=None)
     elif dev_name == "sv1":
-        n_wires = 20
+        n_wires = 15
         device = qml.device("braket.aws.qubit",
                             device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
                             s3_destination_folder=s3,
@@ -89,7 +89,7 @@ def benchmark_power(dev_name, s3=None):
                             shots=None)
     elif dev_name == "tn1":
         shots=1000
-        n_wires = 20
+        n_wires = 15
         device = qml.device("braket.aws.qubit",
                             device_arn='arn:aws:braket:::device/quantum-simulator/amazon/tn1',
                             s3_destination_folder=s3,
@@ -106,7 +106,7 @@ def benchmark_power(dev_name, s3=None):
     else:
         raise ValueError("dev_name not 'local', 'sv1','tn1', or 'ionq'")
 
-    n_layers = 5
+    n_layers = 1
     graph = nx.complete_graph(n_wires)
 
     params = [[0.5] * n_layers, [0.5] * n_layers]
