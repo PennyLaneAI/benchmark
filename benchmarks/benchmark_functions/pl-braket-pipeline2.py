@@ -82,11 +82,11 @@ def benchmark_power(dev_name, s3=None):
     else:
     	graph = nx.complete_graph(20)
 
-	params = [[0.5] * n_layers, [0.5] * n_layers]
-	interface = 'autograd'
-	diff_method = 'best'
-	n_wires = len(graph.nodes)
-	H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
+    params = [[0.5] * n_layers, [0.5] * n_layers]
+    interface = 'autograd'
+    diff_method = 'best'
+    n_wires = len(graph.nodes)
+    H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
 
     if dev_name == "local":
         device = qml.device("braket.local.qubit", wires=n_wires, shots=None)
