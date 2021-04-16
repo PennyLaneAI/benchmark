@@ -22,7 +22,7 @@ def benchmark_casual(dev_name, s3=None):
     """ A simple optimization workflow
 
     Args:
-        dev_name (str): Either "local", "sv1", "tn1"
+        dev_name (str): Either "local", "sv1", "tn1", or "ionq"
         s3 (tuple):  A tuple of (bucket, prefix) to specify the s3 storage location
 
     """
@@ -47,8 +47,15 @@ def benchmark_casual(dev_name, s3=None):
                             s3_destination_folder=s3,
                             wires=n_wires,
                             shots=shots)
+    elif dev_name == "ionq":
+        shots = 1000
+        device = qml.device("braket.aws.qubit",
+                    device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
+                    s3_destination_folder=s3,
+                    wires=n_wires,
+                    shots=shots)
     else:
-        raise ValueError("dev_name not 'local', 'sv1', or 'tn1'")
+        raise ValueError("dev_name not 'local', 'sv1', 'ionq', or 'tn1'")
 
     @qml.qnode(device, interface=interface, diff_method=diff_method)
 	def circuit(params_):
@@ -66,7 +73,7 @@ def benchmark_power(dev_name, s3=None)
     """ A substantial QAOA workflow
 
     Args:
-        dev_name (str): Either "local", "sv1", "tn1"
+        dev_name (str): Either "local", "sv1", "tn1", or "ionq"
         s3 (tuple):  A tuple of (bucket, prefix) to specify the s3 storage location
     """
     n_layers = 5
@@ -92,8 +99,15 @@ def benchmark_power(dev_name, s3=None)
                             s3_destination_folder=s3,
                             wires=n_wires,
                             shots=shots)
+    elif dev_name == "ionq":
+        shots = 1000
+        device = qml.device("braket.aws.qubit",
+                    device_arn='arn:aws:braket:::device/qpu/ionq/ionQdevice',
+                    s3_destination_folder=s3,
+                    wires=n_wires,
+                    shots=shots)
     else:
-        raise ValueError("dev_name not 'local', 'sv1', or 'tn1'")
+        raise ValueError("dev_name not 'local', 'sv1','tn1', or 'ionq'")
 
 	def qaoa_layer(gamma, alpha):
 		qaoa.cost_layer(gamma, H_cost)
