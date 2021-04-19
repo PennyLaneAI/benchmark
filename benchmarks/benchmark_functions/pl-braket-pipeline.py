@@ -58,9 +58,9 @@ def benchmark_casual(dev_name, s3=None):
         raise ValueError("dev_name not 'local', 'sv1', 'ionq', or 'tn1'")
 
     @qml.qnode(device, interface=interface, diff_method=diff_method)
-	def circuit(params_):
-		qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
-		return qml.expval(qml.PauliZ(0))
+    def circuit(params_):
+        qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
+        return qml.expval(qml.PauliZ(0))
 
     opt = qml.GradientDescentOptimizer(stepsize=0.1)
 
@@ -115,15 +115,15 @@ def benchmark_power(dev_name, s3=None):
     n_wires = len(graph.nodes)
     H_cost, H_mixer = qaoa.min_vertex_cover(graph, constrained=False)
 
-	def qaoa_layer(gamma, alpha):
-		qaoa.cost_layer(gamma, H_cost)
-		qaoa.mixer_layer(alpha, H_mixer)
+    def qaoa_layer(gamma, alpha):
+        qaoa.cost_layer(gamma, H_cost)
+        qaoa.mixer_layer(alpha, H_mixer)
 
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
-	def circuit(params):
-		for w in range(n_wires):
-			qml.Hadamard(wires=w)
-		qml.layer(qaoa_layer, n_layers, params[0], params[1])
-		return [qml.sample(qml.PauliZ(i)) for i in range(n_wires)]
+    @qml.qnode(device, interface=interface, diff_method=diff_method)
+    def circuit(params):
+        for w in range(n_wires):
+            qml.Hadamard(wires=w)
+        qml.layer(qaoa_layer, n_layers, params[0], params[1])
+        return [qml.sample(qml.PauliZ(i)) for i in range(n_wires)]
 
-	circuit(params)
+    circuit(params)
