@@ -62,6 +62,8 @@ def benchmark_casual(dev_name, s3=None):
 		qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
 		return qml.expval(qml.PauliZ(0))
 
+
+    params = qml.init.basic_entangler_layers_normal(n_layers, n_wires, mean=0, std=0.1, seed=None)
     opt = qml.GradientDescentOptimizer(stepsize=0.1)
 
     print("starting optimization")
