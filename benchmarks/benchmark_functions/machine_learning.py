@@ -22,139 +22,145 @@ from .default_settings import _ml_defaults
 
 
 def _machine_learning_autograd(quantum_model, data):
-	"""ML example with autograd interface."""
+    """ML example with autograd interface."""
 
-	def hybrid_model(x, w_quantum, w_classical):
-		transformed_x = pnp.dot(w_classical, x)
-		return quantum_model(transformed_x, w_quantum)
+    def hybrid_model(x, w_quantum, w_classical):
+        transformed_x = pnp.dot(w_classical, x)
+        return quantum_model(transformed_x, w_quantum)
 
-	def average_loss(w_quantum, w_classical):
-		c = 0
-		for x, y in data:
-			prediction = hybrid_model(x, w_quantum, w_classical)
-			c += (prediction - y) ** 2
-		return c / len(data)
+    def average_loss(w_quantum, w_classical):
+        c = 0
+        for x, y in data:
+            prediction = hybrid_model(x, w_quantum, w_classical)
+            c += (prediction - y) ** 2
+        return c / len(data)
 
-	n_features = len(data[0][0])
+    n_features = len(data[0][0])
 
-	w_quantum = pnp.array(random(size=(n_features, n_features)), requires_grad=True)
-	w_classical = pnp.array(random(size=(n_features, n_features)), requires_grad=True)
+    w_quantum = pnp.array(random(size=(n_features, n_features)), requires_grad=True)
+    w_classical = pnp.array(random(size=(n_features, n_features)), requires_grad=True)
 
-	gradient_fn_wq = qml.grad(average_loss, argnum=0)
-	gradient_fn_wc = qml.grad(average_loss, argnum=1)
+    gradient_fn_wq = qml.grad(average_loss, argnum=0)
+    gradient_fn_wc = qml.grad(average_loss, argnum=1)
 
-	for _ in range(20):
-		w_quantum = w_quantum - 0.05 * gradient_fn_wq(w_quantum, w_classical)
-		w_classical = w_classical - 0.05 * gradient_fn_wc(w_quantum, w_classical)
+    for _ in range(20):
+        w_quantum = w_quantum - 0.05 * gradient_fn_wq(w_quantum, w_classical)
+        w_classical = w_classical - 0.05 * gradient_fn_wc(w_quantum, w_classical)
 
 
 def _machine_learning_tf(quantum_model, data):
-	"""ML example with tensorflow interface."""
+    """ML example with tensorflow interface."""
 
-	import tensorflow as tf
+    import tensorflow as tf
 
-	data = [[tf.constant(x, dtype=tf.double), tf.constant(y, dtype=tf.double)] for x, y in data]
+    data = [[tf.constant(x, dtype=tf.double), tf.constant(y, dtype=tf.double)] for x, y in data]
 
-	def hybrid_model(x, w_quantum, w_classical):
-		transformed_x = tf.linalg.matvec(w_classical, x)
-		return quantum_model(transformed_x, w_quantum)
+    def hybrid_model(x, w_quantum, w_classical):
+        transformed_x = tf.linalg.matvec(w_classical, x)
+        return quantum_model(transformed_x, w_quantum)
 
-	def average_loss(w_quantum, w_classical):
-		c = tf.constant(0, dtype=tf.double)
-		for x, y in data:
-			prediction = hybrid_model(x, w_quantum, w_classical)
-			c = c + (prediction - y) ** 2
-		return c / len(data)
+    def average_loss(w_quantum, w_classical):
+        c = tf.constant(0, dtype=tf.double)
+        for x, y in data:
+            prediction = hybrid_model(x, w_quantum, w_classical)
+            c = c + (prediction - y) ** 2
+        return c / len(data)
 
-	n_features = len(data[0][0])
+    n_features = len(data[0][0])
 
-	w_quantum = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
-	w_classical = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
+    w_quantum = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
+    w_classical = tf.Variable(random(size=(n_features, n_features)), dtype=tf.double)
 
-	for _ in range(20):
+    for _ in range(20):
 
-		with tf.GradientTape() as tape:
-			loss = average_loss(w_quantum, w_classical)
+        with tf.GradientTape() as tape:
+            loss = average_loss(w_quantum, w_classical)
 
-		grad_qu, grad_class = tape.gradient(loss, [w_quantum, w_classical])
-		w_quantum.assign_sub(0.05 * grad_qu)
-		w_classical.assign_sub(0.05 * grad_class)
+        grad_qu, grad_class = tape.gradient(loss, [w_quantum, w_classical])
+        w_quantum.assign_sub(0.05 * grad_qu)
+        w_classical.assign_sub(0.05 * grad_class)
 
 
 def _machine_learning_torch(quantum_model, data):
-	"""ML example with torch interface."""
+    """ML example with torch interface."""
 
-	import torch
+    import torch
 
-	data = [[torch.tensor(x, dtype=torch.double), torch.tensor(y, dtype=torch.double)] for x, y in data]
+    data = [
+        [torch.tensor(x, dtype=torch.double), torch.tensor(y, dtype=torch.double)] for x, y in data
+    ]
 
-	def hybrid_model(x, w_quantum, w_classical):
-		transformed_x = torch.matmul(w_classical, x)
-		return quantum_model(transformed_x, w_quantum)
+    def hybrid_model(x, w_quantum, w_classical):
+        transformed_x = torch.matmul(w_classical, x)
+        return quantum_model(transformed_x, w_quantum)
 
-	def average_loss(w_quantum, w_classical):
-		c = torch.tensor(0, dtype=torch.double)
-		for x, y in data:
-			prediction = hybrid_model(x, w_quantum, w_classical)
-			c += (prediction - y) ** 2
-		return c / len(data)
+    def average_loss(w_quantum, w_classical):
+        c = torch.tensor(0, dtype=torch.double)
+        for x, y in data:
+            prediction = hybrid_model(x, w_quantum, w_classical)
+            c += (prediction - y) ** 2
+        return c / len(data)
 
-	n_features = len(data[0][0])
+    n_features = len(data[0][0])
 
-	w_quantum = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
-	w_classical = torch.tensor(random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double)
+    w_quantum = torch.tensor(
+        random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double
+    )
+    w_classical = torch.tensor(
+        random(size=(n_features, n_features)), requires_grad=True, dtype=torch.double
+    )
 
-	for _ in range(20):
-		loss = average_loss(w_quantum, w_classical)
-		loss.backward()
+    for _ in range(20):
+        loss = average_loss(w_quantum, w_classical)
+        loss.backward()
 
-		w_quantum.data -= 0.05 * w_quantum.grad
-		w_classical.data -= 0.05 * w_classical.grad
-		w_quantum.grad = None
-		w_classical.grad = None
+        w_quantum.data -= 0.05 * w_quantum.grad
+        w_classical.data -= 0.05 * w_classical.grad
+        w_quantum.grad = None
+        w_classical.grad = None
 
 
 def benchmark_machine_learning(hyperparams={}, num_repeats=1):
-	"""Trains a hybrid quantum-classical machine learning pipeline.
+    """Trains a hybrid quantum-classical machine learning pipeline.
 
-	The data is generated from Gaussian blobs. The model first multiplies the input vectors with
-	a weight matrix, and then feeds it into a quantum model that uses AngleEmbedding for the encoding
-	and BasicEntanglingLayers as the trainable circuit. The number of qubits and layers correspond to the
-	number of features. Training uses gradient descent with 20 steps.
+    The data is generated from Gaussian blobs. The model first multiplies the input vectors with
+    a weight matrix, and then feeds it into a quantum model that uses AngleEmbedding for the encoding
+    and BasicEntanglingLayers as the trainable circuit. The number of qubits and layers correspond to the
+    number of features. Training uses gradient descent with 20 steps.
 
-	Args:
-	hyperparams (dict): hyperparameters to configure this benchmark
+    Args:
+    hyperparams (dict): hyperparameters to configure this benchmark
 
-		* 'n_features': Number of features of each data sample. Defaults to 4.
+            * 'n_features': Number of features of each data sample. Defaults to 4.
 
-		* 'n_samples': Number of data samples to use. Defaults to 20.
+            * 'n_samples': Number of data samples to use. Defaults to 20.
 
-		* 'diff_method': name of differentiation method. Defaults to 'best'.
+            * 'diff_method': name of differentiation method. Defaults to 'best'.
 
-		* 'device': device on which the circuit is run, or valid device name. Defaults to 'default.qubit.
+            * 'device': device on which the circuit is run, or valid device name. Defaults to 'default.qubit.
 
-		* 'interface': name of the interface to use. Defaults to 'autograd'.
+            * 'interface': name of the interface to use. Defaults to 'autograd'.
 
-	num_repeats (int): How often the same circuit is evaluated in a for loop. Default is 1.
-	"""
+    num_repeats (int): How often the same circuit is evaluated in a for loop. Default is 1.
+    """
 
-	data, device, diff_method, interface = _ml_defaults(hyperparams)
+    data, device, diff_method, interface = _ml_defaults(hyperparams)
 
-	@qml.qnode(device, interface=interface, diff_method=diff_method)
-	def quantum_model(x, params):
-		qml.templates.AngleEmbedding(x, wires=range(len(x)))
-		qml.templates.BasicEntanglerLayers(params, wires=range(len(x)))
-		return qml.expval(qml.PauliZ(0))
+    @qml.qnode(device, interface=interface, diff_method=diff_method)
+    def quantum_model(x, params):
+        qml.templates.AngleEmbedding(x, wires=range(len(x)))
+        qml.templates.BasicEntanglerLayers(params, wires=range(len(x)))
+        return qml.expval(qml.PauliZ(0))
 
-	for _ in range(num_repeats):
+    for _ in range(num_repeats):
 
-		if interface == 'autograd':
-			_machine_learning_autograd(quantum_model, data)
+        if interface == "autograd":
+            _machine_learning_autograd(quantum_model, data)
 
-		elif interface == 'tf':
-			_machine_learning_tf(quantum_model, data)
+        elif interface == "tf":
+            _machine_learning_tf(quantum_model, data)
 
-		elif interface == 'torch':
-			_machine_learning_torch(quantum_model, data)
+        elif interface == "torch":
+            _machine_learning_torch(quantum_model, data)
 
-		# TODO: jax
+        # TODO: jax
