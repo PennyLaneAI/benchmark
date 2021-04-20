@@ -19,34 +19,34 @@ from .default_settings import _vqe_defaults
 
 
 def benchmark_vqe(hyperparams={}):
-	"""
-	Performs VQE optimizations.
+    """
+    Performs VQE optimizations.
 
-	Args:
-		hyperparams (dict): hyperparameters to configure this benchmark
+    Args:
+            hyperparams (dict): hyperparameters to configure this benchmark
 
-			* 'ham': Molecular Hamiltonian represented as a PennyLane Hamiltonian class
+                    * 'ham': Molecular Hamiltonian represented as a PennyLane Hamiltonian class
 
-			* 'ansatz': VQE ansatz
+                    * 'ansatz': VQE ansatz
 
-			* 'params': Numpy array of trainable parameters that is fed into the ansatz.
+                    * 'params': Numpy array of trainable parameters that is fed into the ansatz.
 
-			* 'n_steps': Number of VQE steps
+                    * 'n_steps': Number of VQE steps
 
-			* 'device': Device on which the circuit is run, or valid device name
+                    * 'device': Device on which the circuit is run, or valid device name
 
-			* 'interface': Name of the interface to use
+                    * 'interface': Name of the interface to use
 
-			* 'diff_method': Name of differentiation method
+                    * 'diff_method': Name of differentiation method
 
-			* 'optimize': argument for grouping the observables composing the Hamiltonian
-	"""
+                    * 'optimize': argument for grouping the observables composing the Hamiltonian
+    """
 
-	ham, ansatz, params, n_steps, device, options_dict = _vqe_defaults(hyperparams)
+    ham, ansatz, params, n_steps, device, options_dict = _vqe_defaults(hyperparams)
 
-	cost_fn = qml.ExpvalCost(ansatz, ham, device, **options_dict)
+    cost_fn = qml.ExpvalCost(ansatz, ham, device, **options_dict)
 
-	opt = qml.GradientDescentOptimizer(stepsize=0.4)
+    opt = qml.GradientDescentOptimizer(stepsize=0.4)
 
-	for _ in range(n_steps):
-		params, energy = opt.step_and_cost(cost_fn, params)
+    for _ in range(n_steps):
+        params, energy = opt.step_and_cost(cost_fn, params)
