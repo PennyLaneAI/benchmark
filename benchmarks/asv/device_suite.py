@@ -18,31 +18,26 @@ from ..benchmark_functions.circuit import benchmark_circuit
 
 # List of devices to test.
 # The benchmark will fail if a device is not installed.
-DEVICES = ['default.qubit',
-           'lightning.qubit',
-           'default.mixed',
-           'qiskit.aer',
-           'qiskit.basicaer',
-           'cirq.simulator',
-           'cirq.pasqal',
-           'cirq.qsim',
-           'qulacs.simulator'
-           ]
+DEVICES = [
+    "default.qubit",
+    "lightning.qubit",
+    "default.mixed",
+    "qiskit.aer",
+    "qiskit.basicaer",
+    "cirq.simulator",
+    "cirq.pasqal",
+    "cirq.qsim",
+    "qulacs.simulator",
+]
 
 
 class CircuitEvaluation:
     """Benchmark the evaluation of a circuit using different widths and depths."""
 
-    params = (DEVICES,
-              [2, 5, 10],
-              [3, 6, 9])
-    param_names = ['device',
-                   'n_wires',
-                   'n_layers']
+    params = (DEVICES, [2, 5, 10], [3, 6, 9])
+    param_names = ["device", "n_wires", "n_layers"]
 
     def time_circuit(self, dev, n_wires, n_layers):
         """Time a simple default circuit."""
-        hyperparams = {'n_wires': n_wires,
-                       'n_layers': n_layers,
-                       'device': dev}
+        hyperparams = {"n_wires": n_wires, "n_layers": n_layers, "device": dev}
         benchmark_circuit(hyperparams)

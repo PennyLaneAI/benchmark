@@ -1,7 +1,7 @@
 import time
 
-class BenchmarksExample_Class:
 
+class BenchmarksExample_Class:
     @staticmethod
     def benchmark_example_function(duration=0.001):
         time.sleep(duration)
