@@ -69,7 +69,6 @@ def benchmark_casual(dev_name, s3=None):
         qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
         return qml.expval(qml.PauliZ(0))
 
-
     rng = pnp.random.default_rng(seed=42)
     params = pnp.array(rng.standard_normal((n_layers, n_wires)), requires_grad=True)
 
@@ -127,8 +126,7 @@ def benchmark_power(dev_name, s3=None):
     n_layers = 1
     graph = nx.complete_graph(n_wires)
 
-
-    x = 0.5 * pnp.ones((n_layers, 2))
+    params = 0.5 * pnp.ones((n_layers, 2))
     interface = "autograd"
     diff_method = "best"
     n_wires = len(graph.nodes)
