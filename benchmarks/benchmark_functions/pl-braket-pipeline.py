@@ -12,7 +12,7 @@
 """
 Fixed benchmarks for pennylane-braket pipelines.
 """
-from numpy.random import random
+
 import pennylane as qml
 import networkx as nx
 from pennylane import numpy as pnp
@@ -69,8 +69,9 @@ def benchmark_casual(dev_name, s3=None):
         qml.templates.BasicEntanglerLayers(params_, wires=range(n_wires))
         return qml.expval(qml.PauliZ(0))
 
-    params = random((n_layers, n_wires))
-    params = pnp.array(params, requires_grad=True)
+    rng = pnp.random.default_rng(seed=42)
+    params = pnp.array(rng.standard_normal((n_layers, n_wires)), requires_grad=True)
+
     opt = qml.GradientDescentOptimizer(stepsize=0.1)
 
     print("starting optimization")
@@ -125,7 +126,7 @@ def benchmark_power(dev_name, s3=None):
     n_layers = 1
     graph = nx.complete_graph(n_wires)
 
-    params = [[0.5] * n_layers, [0.5] * n_layers]
+    params = 0.5 * pnp.ones((n_layers, 2))
     interface = "autograd"
     diff_method = "best"
     n_wires = len(graph.nodes)
