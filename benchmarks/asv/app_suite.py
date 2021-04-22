@@ -19,7 +19,6 @@ import pennylane as qml
 from pennylane import numpy as np
 from pennylane.templates.subroutines import UCCSD
 from functools import partial
-from pennylane import qchem
 from ..benchmark_functions.vqe import benchmark_vqe
 from ..benchmark_functions.hamiltonians import ham_lih
 from ..benchmark_functions.qaoa import benchmark_qaoa
@@ -65,9 +64,35 @@ class VQE_heavy:
         electrons = 2
         qubits = 8
 
-        singles, doubles = qchem.excitations(electrons, qubits)
-        s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
-        hf_state = qchem.hf_state(electrons, qubits)
+        singles = [[0, 2], [0, 4], [0, 6], [1, 3], [1, 5], [1, 7]]
+        doubles = [[0, 1, 2, 3],
+                    [0, 1, 2, 5],
+                    [0, 1, 2, 7],
+                    [0, 1, 3, 4],
+                    [0, 1, 3, 6],
+                    [0, 1, 4, 5],
+                    [0, 1, 4, 7],
+                    [0, 1, 5, 6],
+                    [0, 1, 6, 7]]
+            
+        s_wires = [[0, 1, 2],
+                    [0, 1, 2, 3, 4],
+                    [0, 1, 2, 3, 4, 5, 6],
+                    [1, 2, 3],
+                    [1, 2, 3, 4, 5],
+                    [1, 2, 3, 4, 5, 6, 7]]
+
+        d_wires = [[[0, 1], [2, 3]],
+                    [[0, 1], [2, 3, 4, 5]],
+                    [[0, 1], [2, 3, 4, 5, 6, 7]],
+                    [[0, 1], [3, 4]],
+                    [[0, 1], [3, 4, 5, 6]],
+                    [[0, 1], [4, 5]],
+                    [[0, 1], [4, 5, 6, 7]],
+                    [[0, 1], [5, 6]],
+                    [[0, 1], [6, 7]]]
+
+        hf_state = np.array([1, 1, 0, 0, 0, 0, 0, 0])
 
         self.ham = ham_lih
 
