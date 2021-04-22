@@ -65,9 +65,9 @@ print(time.time()-start)
 The repository provides already configured collections of benchmark functions called "suites". These 
 suites are automatically detected by ASV.
 
-ASV can be installed via
+ASV and `virtualenv` (required for ASV) can be installed via
 
-`pip install asv `
+`pip install asv virtualenv`
 
 To benchmark all suites for a single commit:
 
