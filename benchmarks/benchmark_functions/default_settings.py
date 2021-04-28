@@ -72,21 +72,13 @@ def _vqe_defaults(hyperparams):
             hyperparams (dict): hyperparameters provided by user
     """
 
-    electrons = 2
-    qubits = 4
-
-
-    singles = [[0, 2], [1,3]]
-    doubles = [[0, 1, 2, 3]]
-
     s_wires = [[0, 1, 2], [1, 2, 3]]
     d_wires = [[[0, 1], [2, 3]]]
 
-    hf_state = np.arrray([1, 1, 0, 0])
+    hf_state = np.array([1, 1, 0, 0])
 
     ansatz = partial(UCCSD, init_state=hf_state, s_wires=s_wires, d_wires=d_wires)
     params = np.array([3.14545258, 3.13766988, -0.21446816])
-
 
     ham = hyperparams.pop("Hamiltonian", ham_h2)
     ansatz = hyperparams.pop("ansatz", ansatz)
@@ -99,11 +91,9 @@ def _vqe_defaults(hyperparams):
 
     options_dict = {"interface": interface, "diff_method": diff_method, "optimize": optimize}
 
+    # if device name is given, create device
     if isinstance(device, str):
-        if device == "cirq.pasqal":
-            device = qml.device(device, wires=n_wires, control_radius=1.5)
-        else:
-            device = qml.device(device, wires=n_wires)
+        device = qml.device(device, wires=len(hf_state), analytic=False)
 
     return ham, ansatz, params, n_steps, device, options_dict
 
