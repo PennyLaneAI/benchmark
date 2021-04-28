@@ -24,7 +24,6 @@ from functools import partial
 from pennylane.templates import BasicEntanglerLayers
 from pennylane.templates.decorator import template as template_decorator
 from pennylane.templates.subroutines import UCCSD
-from pennylane import Identity, PauliX, PauliY, PauliZ
 
 from .hamiltonians import ham_h2
 
@@ -48,9 +47,13 @@ def _core_defaults(hyperparams):
     # if device name is given, create device
     if isinstance(device, str):
         if device == "cirq.pasqal":
-            device = qml.device(device, wires=n_wires, control_radius=1.5)
+            device = qml.device(device, wires=n_wires, control_radius=1.5, cache=0)
         else:
-            device = qml.device(device, wires=n_wires)
+            try:
+                device = qml.device(device, wires=n_wires, cache=0)
+            except TypeError:
+                # devices that do not inherit from DefaultQubit do not take caching argument
+                device = qml.device(device, wires=n_wires)
 
     # wrap default template so it only takes the parameters as argument
     if template is None:
@@ -99,11 +102,16 @@ def _vqe_defaults(hyperparams):
 
     options_dict = {"interface": interface, "diff_method": diff_method, "optimize": optimize}
 
+    # if device name is given, create device
     if isinstance(device, str):
         if device == "cirq.pasqal":
-            device = qml.device(device, wires=n_wires, control_radius=1.5)
+            device = qml.device(device, wires=n_wires, control_radius=1.5, cache=0)
         else:
-            device = qml.device(device, wires=n_wires)
+            try:
+                device = qml.device(device, wires=n_wires, cache=0)
+            except TypeError:
+                # devices that do not inherit from DefaultQubit do not take caching argument
+                device = qml.device(device, wires=n_wires)
 
     return ham, ansatz, params, n_steps, device, options_dict
 
@@ -126,7 +134,14 @@ def _qaoa_defaults(hyperparams):
 
     # if device name is given, create device
     if isinstance(device, str):
-        device = qml.device(device, wires=len(graph.nodes), analytic=False)
+        if device == "cirq.pasqal":
+            device = qml.device(device, wires=len(graph.nodes), shots=None, control_radius=1.5, cache=0)
+        else:
+            try:
+                device = qml.device(device, wires=len(graph.nodes), shots=None, cache=0)
+            except TypeError:
+                # devices that do not inherit from DefaultQubit do not take caching argument
+                device = qml.device(device, wires=len(graph.nodes), shots=None)
 
     options_dict = {"interface": interface, "diff_method": diff_method}
 
@@ -148,7 +163,14 @@ def _ml_defaults(hyperparams):
 
     # if device name is given, create device
     if isinstance(device, str):
-        device = qml.device(device, wires=n_features)
+        if device == "cirq.pasqal":
+            device = qml.device(device, wires=n_features, control_radius=1.5, cache=0)
+        else:
+            try:
+                device = qml.device(device, wires=n_features, cache=0)
+            except TypeError:
+                # devices that do not inherit from DefaultQubit do not take caching argument
+                device = qml.device(device, wires=n_features)
 
     # data
     x0 = np.random.normal(loc=-1, scale=1, size=(n_samples // 2, n_features))
