@@ -41,14 +41,14 @@ def benchmark_gradient(hyperparams={}, num_repeats=1):
 
                     * 'template': Template to use. The template must take the trainable parameters as its only argument.
 
-                    * 'params': Numpy array of trainable parameters that is fed into the template.
+                    * 'param_shape': numpy array of trainable parameters that is fed into the template
 
                     * 'measurement': measurement function like `qml.expval(qml.PauliZ(0)))`
 
             num_repeats (int): How often the same circuit is evaluated in a for loop. Default is 1.
     """
 
-    device, diff_method, interface, params, template, measurement = _core_defaults(hyperparams)
+    device, diff_method, interface, param_shape, template, measurement = _core_defaults(hyperparams)
 
     @qml.qnode(device, interface=interface, diff_method=diff_method)
     def circuit(params_):
@@ -57,6 +57,10 @@ def benchmark_gradient(hyperparams={}, num_repeats=1):
         return measurement
 
     for _ in range(num_repeats):
+
+        # re-initialise the parameters each time,
+        # so caching cannot skew the results
+        params = pnp.random.random(param_shape)
 
         if interface == "autograd":
             params = pnp.array(params, requires_grad=True)

@@ -38,7 +38,7 @@ def _core_defaults(hyperparams):
     n_wires = hyperparams.pop("n_wires", 4)
     n_layers = hyperparams.pop("n_layers", 6)
     interface = hyperparams.pop("interface", "autograd")
-    params = hyperparams.pop("params", random(size=(n_layers, n_wires)))
+    param_shape = hyperparams.pop("param_shape", (n_layers, n_wires))
     measurement = hyperparams.pop("measurement", qml.expval(qml.PauliZ(0)))
     diff_method = hyperparams.pop("diff_method", "best")
     device = hyperparams.pop("device", "default.qubit")
@@ -64,7 +64,7 @@ def _core_defaults(hyperparams):
 
         template = Template
 
-    return device, diff_method, interface, params, template, measurement
+    return device, diff_method, interface, param_shape, template, measurement
 
 
 def _vqe_defaults(hyperparams):
