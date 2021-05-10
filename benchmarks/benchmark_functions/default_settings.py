@@ -93,7 +93,7 @@ def _vqe_defaults(hyperparams):
 
     # if device name is given, create device
     if isinstance(device, str):
-        device = qml.device(device, wires=len(hf_state), analytic=False)
+        device = qml.device(device, wires=len(hf_state), shots=None)
 
     return ham, ansatz, params, n_steps, device, options_dict
 
@@ -116,7 +116,7 @@ def _qaoa_defaults(hyperparams):
 
     # if device name is given, create device
     if isinstance(device, str):
-        device = qml.device(device, wires=len(graph.nodes), analytic=False)
+        device = qml.device(device, wires=len(graph.nodes), shots=None)
 
     options_dict = {"interface": interface, "diff_method": diff_method}
 
