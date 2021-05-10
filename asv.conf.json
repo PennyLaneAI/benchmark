@@ -51,6 +51,8 @@
     "matrix": {
         "tensorflow": [],
         "torch": [],
+        "jax": [],
+        "jaxlib": [],
         "networkx": [],
         "Qulacs": [],
         "qsimcirq": [],
