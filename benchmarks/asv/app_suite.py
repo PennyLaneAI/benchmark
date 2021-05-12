@@ -61,20 +61,6 @@ class VQE_heavy:
 
     def setup(self, optimize):
 
-        electrons = 2
-        qubits = 8
-
-        singles = [[0, 2], [0, 4], [0, 6], [1, 3], [1, 5], [1, 7]]
-        doubles = [[0, 1, 2, 3],
-                    [0, 1, 2, 5],
-                    [0, 1, 2, 7],
-                    [0, 1, 3, 4],
-                    [0, 1, 3, 6],
-                    [0, 1, 4, 5],
-                    [0, 1, 4, 7],
-                    [0, 1, 5, 6],
-                    [0, 1, 6, 7]]
-            
         s_wires = [[0, 1, 2],
                     [0, 1, 2, 3, 4],
                     [0, 1, 2, 3, 4, 5, 6],
@@ -118,7 +104,7 @@ class VQE_heavy:
             ]
         )
 
-        self.device = qml.device("default.qubit", wires=qubits)
+        self.device = qml.device("default.qubit", wires=len(hf_state))
 
     def time_lih(self, optimize):
         """Time the VQE algorithm for the lithium hydride molecule."""
