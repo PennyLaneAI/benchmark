@@ -17,6 +17,7 @@ import pennylane as qml
 import networkx as nx
 from pennylane import numpy as pnp
 from pennylane import qaoa
+from .hamiltonians import ham_h2
 
 
 def benchmark_casual(dev_name, s3=None):
@@ -144,3 +145,58 @@ def benchmark_power(dev_name, s3=None):
         return [qml.sample(qml.PauliZ(i)) for i in range(n_wires)]
 
     circuit(params)
+
+
+def benchmark_qchem(dev_name, s3=None):
+    """A basic qchem workflow
+
+    Args:
+        dev_name (str): Either "local", "sv1", "tn1", or "ionq"
+        s3 (tuple):  A tuple of (bucket, prefix) to specify the s3 storage location
+    """
+    n_wires = 4
+
+    if dev_name == "local":
+        device = qml.device("braket.local.qubit", wires=n_wires, shots=None)
+    elif dev_name == "sv1":
+        device = qml.device(
+            "braket.aws.qubit",
+            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
+            s3_destination_folder=s3,
+            wires=n_wires,
+            shots=None,
+        )
+    elif dev_name == "tn1":
+        shots = 1000
+        device = qml.device(
+            "braket.aws.qubit",
+            device_arn="arn:aws:braket:::device/quantum-simulator/amazon/tn1",
+            s3_destination_folder=s3,
+            wires=n_wires,
+            shots=shots,
+        )
+    elif dev_name == "ionq":
+        shots = 100
+        device = qml.device(
+            "braket.aws.qubit",
+            device_arn="arn:aws:braket:::device/qpu/ionq/ionQdevice",
+            s3_destination_folder=s3,
+            wires=n_wires,
+            shots=shots,
+        )
+    else:
+        raise ValueError("dev_name not 'local', 'sv1','tn1', or 'ionq'")
+
+    def circuit(params, wires):
+        qml.PauliX(0)
+        qml.PauliX(1)
+        qml.DoubleExcitation(params[0], wires=[0, 1, 2, 3])
+        qml.SingleExcitation(params[1], wires=[0, 2])
+        qml.SingleExcitation(params[2], wires=[1, 3])
+
+    params = [0.0] * 3
+    cost_fn = qml.ExpvalCost(circuit, ham_h2, device, optimize=True)
+    opt = qml.GradientDescentOptimizer(stepsize=0.5)
+
+    for _ in range(1):
+        params, energy = opt.step_and_cost(cost_fn, params)
