@@ -154,12 +154,11 @@ def benchmark_qchem(dev_name, s3=None):
         dev_name (str): Either "local", "sv1", "tn1", or "ionq"
         s3 (tuple):  A tuple of (bucket, prefix) to specify the s3 storage location
     """
+    n_wires = 4
 
     if dev_name == "local":
-        n_wires = 4
         device = qml.device("braket.local.qubit", wires=n_wires, shots=None)
     elif dev_name == "sv1":
-        n_wires = 4
         device = qml.device(
             "braket.aws.qubit",
             device_arn="arn:aws:braket:::device/quantum-simulator/amazon/sv1",
@@ -169,7 +168,6 @@ def benchmark_qchem(dev_name, s3=None):
         )
     elif dev_name == "tn1":
         shots = 1000
-        n_wires = 4
         device = qml.device(
             "braket.aws.qubit",
             device_arn="arn:aws:braket:::device/quantum-simulator/amazon/tn1",
@@ -179,7 +177,6 @@ def benchmark_qchem(dev_name, s3=None):
         )
     elif dev_name == "ionq":
         shots = 100
-        n_wires = 4
         device = qml.device(
             "braket.aws.qubit",
             device_arn="arn:aws:braket:::device/qpu/ionq/ionQdevice",
@@ -191,16 +188,14 @@ def benchmark_qchem(dev_name, s3=None):
         raise ValueError("dev_name not 'local', 'sv1','tn1', or 'ionq'")
 
     def circuit(params, wires):
-        qml.BasisState(np.array([1, 1, 0, 0], requires_grad=False), wires=wires)
-        for i in wires:
-            qml.Rot(*params[i], wires=i)
-        qml.CNOT(wires=[2, 3])
-        qml.CNOT(wires=[2, 0])
-        qml.CNOT(wires=[3, 1])
+        qml.PauliX(0)
+        qml.PauliX(1)
+        qml.DoubleExcitation(params[0], wires=[0, 1, 2, 3])
+        qml.SingleExcitation(params[1], wires=[0, 2])
+        qml.SingleExcitation(params[2], wires=[1, 3])
 
-    np.random.seed(0)
-    params = np.random.normal(0, np.pi, (n_wires, 3))
-    cost_fn = qml.ExpvalCost(circuit, ham_h2, device)
+    params = [0.0] * 3
+    cost_fn = qml.ExpvalCost(circuit, ham_h2, device, optimize=True)
     opt = qml.GradientDescentOptimizer(stepsize=0.5)
 
     for _ in range(1):
