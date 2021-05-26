@@ -34,7 +34,7 @@ class CircuitEvaluation_light:
 class GradientComputation_light:
     """Time the computation of a gradient using different widths and depths."""
 
-    params = ([2, 5], [3, 6], ["autograd", "tf", "torch"])
+    params = ([2, 5], [3, 6], ["autograd", "tf", "torch", "jax"])
     param_names = ["n_wires", "n_layers", "interface"]
 
     def time_gradient(self, n_wires, n_layers, interface):

@@ -18,6 +18,11 @@ import pennylane as qml
 from pennylane import numpy as pnp
 from .default_settings import _core_defaults
 
+try:
+    import jax
+    from jax import numpy as jnp
+except ImportError:
+    pass
 
 def benchmark_gradient(hyperparams={}, num_repeats=1):
     """Computes the gradient of a quantum circuit.
@@ -78,4 +83,10 @@ def benchmark_gradient(hyperparams={}, num_repeats=1):
             result = circuit(params)
             result.backward()
 
-        # TODO: jax
+        elif interface == "jax":
+
+            params = jnp.array(params)
+
+            jac = jax.jacobian(circuit)
+            jac(params)
+
