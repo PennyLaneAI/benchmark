@@ -127,7 +127,7 @@ def benchmark_power(dev_name, s3=None):
     n_layers = 1
     graph = nx.complete_graph(n_wires)
 
-    params = 0.5 * pnp.ones((n_layers, 2))
+    params = 0.5 * pnp.ones((2, n_layers))
     interface = "autograd"
     diff_method = "best"
     n_wires = len(graph.nodes)
