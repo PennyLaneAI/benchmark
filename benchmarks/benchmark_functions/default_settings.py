@@ -85,7 +85,7 @@ def _vqe_defaults(hyperparams):
     device = hyperparams.pop("device", "default.qubit")
     interface = hyperparams.pop("interface", "autograd")
     diff_method = hyperparams.pop("diff_method", "best")
-    grouping = hyperparams.pop("optimize", False)
+    grouping = hyperparams.pop("optimize", True)
 
     # if device name is given, create device
     if isinstance(device, str):
