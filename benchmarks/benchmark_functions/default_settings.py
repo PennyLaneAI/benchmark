@@ -24,8 +24,6 @@ from functools import partial
 from pennylane.templates import BasicEntanglerLayers
 from pennylane.templates.decorator import template as template_decorator
 from pennylane.templates.subroutines import UCCSD
-from pennylane import Identity, PauliX, PauliY, PauliZ
-
 from .hamiltonians import ham_h2
 
 
@@ -87,15 +85,13 @@ def _vqe_defaults(hyperparams):
     device = hyperparams.pop("device", "default.qubit")
     interface = hyperparams.pop("interface", "autograd")
     diff_method = hyperparams.pop("diff_method", "best")
-    optimize = hyperparams.pop("optimize", True)
-
-    options_dict = {"interface": interface, "diff_method": diff_method, "optimize": optimize}
+    grouping = hyperparams.pop("optimize", True)
 
     # if device name is given, create device
     if isinstance(device, str):
         device = qml.device(device, wires=len(hf_state), shots=None)
 
-    return ham, ansatz, params, n_steps, device, options_dict
+    return ham, ansatz, params, n_steps, device, interface, diff_method, grouping
 
 
 def _qaoa_defaults(hyperparams):
